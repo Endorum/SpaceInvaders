@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../view/Layer.hpp"
+#include "Player.hpp"
 
 
 
@@ -20,6 +21,7 @@ public:
 private:
     // processes user input, returns true if window has been closed
     bool input();
+    void processInput();
 
     // updates all game elements
     void update(float time_passed);
@@ -32,6 +34,9 @@ private:
     // view area and layers
     sf::View view;
     Layer game_layer;
+
+    
+    Player player;
 };
 
 #endif

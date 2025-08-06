@@ -22,6 +22,8 @@ void Game::start() {
     while (window.isOpen()) {
         // Restart the clock and save the elapsed time into elapsed_time
         sf::Time elapsed_time = clock.restart();
+
+        
  
         // handle input, check if window is still open
         if (!input()) {
@@ -30,6 +32,16 @@ void Game::start() {
             // draw the scene
             draw();
         }
+    }
+}
+
+void Game::processInput(){
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){
+        player.move_right();
+    }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)){
+        player.move_left();
     }
 }
 
@@ -49,19 +61,25 @@ bool Game::input() {
         // if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
             // if (keyReleased->code == sf::Keyboard::Key::Right) { // right arrow released
                 // ...
+
     }
     return false;
 }
 
 void Game::update(float time_passed) {
     // TODO: update the game objects with the current time stamp
+    processInput();
 }
 
 void Game::draw() {
     window.clear();
 
     game_layer.clear();
-    // TODO: add game elements to layer
+    
+    
+    game_layer.add_to_layer(player.get_shape());
+
+
     game_layer.draw();
 
     window.display();
