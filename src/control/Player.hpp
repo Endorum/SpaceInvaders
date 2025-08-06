@@ -1,11 +1,11 @@
 #pragma once
 
 #include "../model/Constants.hpp"
-
+#include <SFML/Graphics.hpp>
 
 class Player{
 public:
-    Player(int start_pos) : position(start_pos), health(3), width(20) {}
+    Player(int start_pos=constants::VIEW_WIDTH/2) : position(start_pos), health(3), width(20) {}
 
     // 3 hp at the start, -1 if hit, dead if health <= 0
     int health;
