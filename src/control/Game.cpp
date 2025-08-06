@@ -1,6 +1,7 @@
 #include "Game.hpp"
 
 #include <SFML/Window/Keyboard.hpp>
+#include <optional>
 
 #include "../model/Constants.hpp"
 
