@@ -26,5 +26,10 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "iostream": "cpp"
-    }
+    },
+    
+    "cmake.configureOnOpen": true,
+    "cmake.generator": "Ninja",
+    "cmake.buildDirectory": "${workspaceFolder}/build"
+
 }

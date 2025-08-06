@@ -38,9 +38,11 @@ void Game::start() {
     }
 
     // create aliens
-    place_aliens(50, alien_texture);
+    // place_aliens(50, &alien_texture);
 
-    
+    alien = new Alien(0,0,alien_texture);
+
+
 
 
     
@@ -106,9 +108,10 @@ void Game::draw() {
     // add player sprite to layer
     game_layer.add_to_layer(player->get_sprite());
 
+    game_layer.add_to_layer(alien->get_sprite());
 
     // add alien sprites to layer
-    add_aliens_to_layer();
+    // add_aliens_to_layer();
     
 
 

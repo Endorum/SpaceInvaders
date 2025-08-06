@@ -1,10 +1,12 @@
 #pragma once
 
 #include "../model/Constants.hpp"
+
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics.hpp>
+
 #include <iostream>
 
 #define PLAYER_SPEED 5

@@ -23,33 +23,33 @@ public:
     void start();
 
     // 5 rows x 10 elms 
-    void place_aliens(int amount, sf::Texture texture, int rows=5, int elms=10){
+    void place_aliens(int amount, sf::Texture* texture, int rows=5, int elms=10){
 
-        int x_pos = 0;
-        int y_pos = 0;
+        // int x_pos = 0;
+        // int y_pos = 0;
 
-        int gap = 1; // in px
+        // int gap = 1; // in px
 
-        for(int i=0;i<amount;i++){
+        // for(int i=0;i<amount;i++){
 
-            x_pos += 1;
+        //     x_pos += 1;
             
-            if(i % elms == 0){
-                x_pos = 0;
-                y_pos += 1;
-            }
+        //     if(i % elms == 0){
+        //         x_pos = 0;
+        //         y_pos += 1;
+        //     }
 
 
-            Alien alien(x_pos,y_pos,texture);
+        //     Alien alien(x_pos,y_pos,texture);
 
-            aliens.push_back(alien);
-        }
+        //     aliens.push_back(alien);
+        // }
     }
 
     void add_aliens_to_layer(){
-        for(int i=0;i<aliens.size();i++){
-            game_layer.add_to_layer(aliens.at(i).get_sprite());
-        }
+        // for(int i=0;i<aliens.size();i++){
+        //     game_layer.add_to_layer(aliens.at(i).get_sprite());
+        // }
     }
 
 private:
@@ -72,7 +72,7 @@ private:
     
     Player* player;
     
-    std::vector<Alien> aliens;
+    Alien* alien;
 
 };
 
