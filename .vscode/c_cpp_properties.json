@@ -7,7 +7,8 @@
                 "/usr/local/include",
                 "${workspaceFolder}/src/view",
                 "/opt/homebrew/include",
-                "${workspaceFolder}/build/_deps/sfml-src/include/SFML"
+                "${workspaceFolder}/build/_deps/sfml-src/include/SFML",
+                "opt/homebrew/include/SFML/Graphics"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

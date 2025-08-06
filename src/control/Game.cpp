@@ -23,12 +23,25 @@ void Game::start() {
 
     // load player sprite 
     if(!texture.loadFromFile("assets/sprites/player.png")){
-        std::cerr << "Could not load player asset" << std::endl;
+        std::cerr << "Could not load player sprite" << std::endl;
         exit(1);
-
     }
 
+    // create player
     player = new Player(texture);
+
+    sf::Texture alien_texture;
+    // load alien sprite
+    if(!alien_texture.loadFromFile("assets/sprites/alien.png")){
+        std::cerr << "Could not load alien sprite" << std::endl;
+        exit(1);
+    }
+
+    // create aliens
+    place_aliens(50, alien_texture);
+
+    
+
 
     
 
@@ -89,8 +102,14 @@ void Game::draw() {
 
     game_layer.clear();
     
-    
+
+    // add player sprite to layer
     game_layer.add_to_layer(player->get_sprite());
+
+
+    // add alien sprites to layer
+    add_aliens_to_layer();
+    
 
 
     game_layer.draw();

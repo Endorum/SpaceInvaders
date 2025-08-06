@@ -22,19 +22,14 @@ public:
         sprite.setTexture(texture);
 
 
-        sprite.setColor({255,255,255,255});
-
-        sprite.setScale({3.f,3.f});
-
-        // sprite.setSize(sf::Vector2f(width, height));
+        sprite.setScale({2.f,2.f});
         sprite.setOrigin(sf::Vector2f( width / 2.f, height / 2.f) );
-        // sprite.setFillColor(sf::Color::Green);
         sprite.setPosition(sf::Vector2f( start_pos, vert_pos ) );
         
 
     }
 
-    void update_shape_position(){
+    void update_sprite_position(){
         sprite.setPosition(sf::Vector2f( position, vert_pos ) );
     }
 
@@ -45,7 +40,7 @@ public:
             position += amount;
         }
 
-        update_shape_position();
+        update_sprite_position();
     } 
 
     void move_right(int amount=PLAYER_SPEED){
@@ -55,18 +50,13 @@ public:
             position -= amount;
         }
 
-        update_shape_position();
+        update_sprite_position();
     }
+
 
     const sf::Sprite& get_sprite() const {
         return sprite;
     }
-
-
-    // const sf::RectangleShape& get_shape() const {
-    //     // return shape;
-
-    // }
 
 private:
 
@@ -91,10 +81,7 @@ private:
 
     // fixed height
     const int vert_pos;
-
-
-    // sf::RectangleShape shape;
-    
+ 
     
     sf::Sprite sprite;
     sf::Texture texture;
