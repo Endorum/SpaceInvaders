@@ -5,24 +5,37 @@
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 #define PLAYER_SPEED 5
 
 class Player{
 public:
-    Player(int start_pos=constants::VIEW_WIDTH/2) 
-        : position(start_pos), health(3), width(20), height(10), vert_pos(-40) {
+    Player(sf::Texture t) 
+        : position(constants::VIEW_WIDTH/2), health(3), width(32), height(32), vert_pos(-40), texture(t),  sprite(t) {
 
-        shape.setSize(sf::Vector2f(width, height));
-        shape.setOrigin(sf::Vector2f( width / 2.f, height / 2.f) );
-        shape.setFillColor(sf::Color::Green);
-        shape.setPosition(sf::Vector2f( start_pos, vert_pos ) );
+        
+
+
+        int start_pos = constants::VIEW_WIDTH/2;
+
+        sprite.setTexture(texture);
+
+
+        sprite.setColor({255,255,255,255});
+
+        sprite.setScale({3.f,3.f});
+
+        // sprite.setSize(sf::Vector2f(width, height));
+        sprite.setOrigin(sf::Vector2f( width / 2.f, height / 2.f) );
+        // sprite.setFillColor(sf::Color::Green);
+        sprite.setPosition(sf::Vector2f( start_pos, vert_pos ) );
+        
 
     }
-    
 
     void update_shape_position(){
-        shape.setPosition(sf::Vector2f( position, vert_pos ) );
+        sprite.setPosition(sf::Vector2f( position, vert_pos ) );
     }
 
     void move_left(int amount=PLAYER_SPEED){
@@ -46,12 +59,14 @@ public:
     }
 
     const sf::Sprite& get_sprite() const {
-
+        return sprite;
     }
 
-    const sf::RectangleShape& get_shape() const {
-        return shape;
-    }
+
+    // const sf::RectangleShape& get_shape() const {
+    //     // return shape;
+
+    // }
 
 private:
 
@@ -78,9 +93,10 @@ private:
     const int vert_pos;
 
 
-    sf::RectangleShape shape;
+    // sf::RectangleShape shape;
     
     
     sf::Sprite sprite;
+    sf::Texture texture;
 
 };  

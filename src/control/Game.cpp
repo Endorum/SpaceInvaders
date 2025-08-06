@@ -19,6 +19,19 @@ void Game::start() {
     // The clock is needed to control the speed of movement
     sf::Clock clock;
 
+    sf::Texture texture;
+
+    // load player sprite 
+    if(!texture.loadFromFile("assets/sprites/player.png")){
+        std::cerr << "Could not load player asset" << std::endl;
+        exit(1);
+
+    }
+
+    player = new Player(texture);
+
+    
+
     while (window.isOpen()) {
         // Restart the clock and save the elapsed time into elapsed_time
         sf::Time elapsed_time = clock.restart();
@@ -37,11 +50,11 @@ void Game::start() {
 
 void Game::processInput(){
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){
-        player.move_right();
+        player->move_right();
     }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)){
-        player.move_left();
+        player->move_left();
     }
 }
 
@@ -77,7 +90,7 @@ void Game::draw() {
     game_layer.clear();
     
     
-    game_layer.add_to_layer(player.get_shape());
+    game_layer.add_to_layer(player->get_sprite());
 
 
     game_layer.draw();

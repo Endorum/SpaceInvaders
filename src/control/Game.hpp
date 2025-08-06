@@ -36,7 +36,7 @@ private:
     Layer game_layer;
 
     
-    Player player;
+    Player* player;
 };
 
 #endif
