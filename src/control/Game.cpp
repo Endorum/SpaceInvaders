@@ -81,22 +81,23 @@ bool Game::input() {
             window.close();
             return true;
         }
-        // TODO: Process other events
-        // examples:
-        //if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-            //if (keyPressed->code == sf::Keyboard::Key::Right) { // right arrow key pressed
-                // ...
-        // if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
-            // if (keyReleased->code == sf::Keyboard::Key::Right) { // right arrow released
-                // ...
-
+        if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+            if (keyPressed->code == sf::Keyboard::Key::Right) {
+                player->move_right();
+            } else if (keyPressed->code == sf::Keyboard::Key::Left) {
+                player->move_left();
+            } else if (keyPressed->code == sf::Keyboard::Key::Escape) {
+                window.close();
+                return true;
+            }
     }
     return false;
+}
 }
 
 void Game::update(float time_passed) {
     // TODO: update the game objects with the current time stamp
-    processInput();
+    //processInput();
 }
 
 void Game::draw() {
