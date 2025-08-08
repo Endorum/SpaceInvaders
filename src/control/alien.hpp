@@ -7,11 +7,12 @@
 class Alien{
 
 public:
-    Alien(int init_pos_x, int init_pos_y, sf::Texture t) : pos_x(init_pos_x), pos_y(init_pos_x), texture(t), sprite(t) {
-        
-        sprite.setTexture(texture);
+    Alien(float init_pos_x, float init_pos_y, const sf::Texture& t) : pos_x(init_pos_x), pos_y(init_pos_y), sprite(t) {
 
-        sprite.setScale({50.f, 50.f});
+        size = 3; // default size of alien sprite
+        sprite.setTexture(t);
+
+        sprite.setScale({3.f, 3.f});
         sprite.setOrigin(sf::Vector2f( size/2.f, size/2.f ));
         sprite.setPosition(sf::Vector2f( pos_x, pos_y ));
 
@@ -59,12 +60,12 @@ public:
 
 
 private:
-    int pos_x;
-    int pos_y;
+    float pos_x;
+    float pos_y;
 
 
     // assuming aliens are square and not rectangular
-    int size; 
+    float size; 
 
     // aliens only need one hit to die
     bool alive = true;
@@ -72,9 +73,6 @@ private:
     // TODO: think about how many points a kill yields
     int yielding_points = 0;
 
-
-
-    sf::Texture texture;
     sf::Sprite sprite;
 
 }; 

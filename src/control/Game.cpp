@@ -15,6 +15,20 @@ Game::Game() : window(sf::VideoMode({constants::VIEW_WIDTH, constants::VIEW_HEIG
     game_layer.set_view(view);
 }
 
+// 5 rows x 10 elms 
+void Game::place_aliens(int amount, sf::Texture& texture, int rows, int elms){
+    float x_pos = 0;
+    float y_pos = 0;
+
+    aliens.clear();
+    for(int i = 0; i < amount; i++){
+        x_pos = constants::ALIEN_START_X + (i % elms) * constants::ALIEN_SPACING_X; // 1.5f is the space between aliens
+        y_pos = constants::ALIEN_START_Y + (i / elms) * constants::ALIEN_SPACING_Y; // 1.5f is the space between aliens
+        Alien alien(x_pos, y_pos, texture);
+        aliens.push_back(alien);
+    }
+}
+
 void Game::start() {
     // The clock is needed to control the speed of movement
     sf::Clock clock;
@@ -37,15 +51,8 @@ void Game::start() {
         exit(1);
     }
 
-    // create aliens
-    // place_aliens(50, &alien_texture);
-
-    alien = new Alien(0,0,alien_texture);
-
-
-
-
-    
+    // place aliens in the game
+    place_aliens(40, alien_texture);
 
     while (window.isOpen()) {
         // Restart the clock and save the elapsed time into elapsed_time
@@ -81,22 +88,29 @@ bool Game::input() {
             window.close();
             return true;
         }
-        // TODO: Process other events
-        // examples:
-        //if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-            //if (keyPressed->code == sf::Keyboard::Key::Right) { // right arrow key pressed
-                // ...
-        // if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
-            // if (keyReleased->code == sf::Keyboard::Key::Right) { // right arrow released
-                // ...
-
+        if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+            if (keyPressed->code == sf::Keyboard::Key::Right) {
+                player->move_right();
+            } else if (keyPressed->code == sf::Keyboard::Key::Left) {
+                player->move_left();
+            } else if (keyPressed->code == sf::Keyboard::Key::Escape) {
+                window.close();
+                return true;
+            }
     }
     return false;
+}
 }
 
 void Game::update(float time_passed) {
     // TODO: update the game objects with the current time stamp
-    processInput();
+    //processInput();
+}
+
+void Game::add_aliens_to_layer() {
+        for(int i=0;i<aliens.size();i++){
+            game_layer.add_to_layer(aliens.at(i).get_sprite());
+        }
 }
 
 void Game::draw() {
@@ -108,10 +122,8 @@ void Game::draw() {
     // add player sprite to layer
     game_layer.add_to_layer(player->get_sprite());
 
-    game_layer.add_to_layer(alien->get_sprite());
-
     // add alien sprites to layer
-    // add_aliens_to_layer();
+    add_aliens_to_layer();
     
 
 
