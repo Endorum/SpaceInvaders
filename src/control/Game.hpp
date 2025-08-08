@@ -6,9 +6,7 @@
 
 #include "../view/Layer.hpp"
 #include "Player.hpp"
-#include "Alien.hpp"
-// Forward declaration to avoid circular include
-
+#include "alien.hpp"
 
 
 
@@ -38,6 +36,7 @@ private:
 
     sf::RenderWindow window;
 
+    void show_lasers();
     void add_aliens_to_layer();
 
     // view area and layers
