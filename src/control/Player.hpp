@@ -8,13 +8,14 @@
 #include <SFML/Graphics.hpp>
 
 #include <iostream>
+#include "Laser.hpp"
 
 #define PLAYER_SPEED 5
 
 class Player{
 public:
-    Player(sf::Texture t) 
-        : position(constants::VIEW_WIDTH/2), health(3), width(32), height(32), vert_pos(-40), texture(t),  sprite(t) {
+    Player(sf::Texture t, sf::Texture lt) 
+        : position(constants::VIEW_WIDTH/2), health(3), width(32), height(32), vert_pos(-40), texture(t),  sprite(t), laser_texture(lt) {
 
         
 
@@ -60,6 +61,33 @@ public:
         return sprite;
     }
 
+
+    void shoot_laser(){
+        Laser* laser = new Laser(position, vert_pos - height/2.f, laser_texture);
+        lasers.push_back(laser);
+    }
+
+    // update player, currently only updates the lasers
+    void update(){
+        // check for health etc.
+
+
+        // Use Iterators so we can erase the laser safely
+        for(auto it = lasers.begin(); it != lasers.end(); ){
+            Laser* laser = *it;
+            bool destroy = laser->update();
+
+            if(destroy){
+                delete laser;
+                it = lasers.erase(it);
+            }else it++;
+        }
+    }
+
+    std::vector<Laser*> get_lasers(){
+        return lasers;
+    }
+
 private:
 
     // 3 hp at the start, -1 if hit, dead if health <= 0
@@ -76,6 +104,8 @@ private:
         );
     }
 
+
+
     
 
     // in the center (+/- width/2 to both sides)
@@ -87,5 +117,9 @@ private:
     
     sf::Sprite sprite;
     sf::Texture texture;
+
+    sf::Texture laser_texture;
+
+    std::vector<Laser*> lasers; // int id for deletion
 
 };  

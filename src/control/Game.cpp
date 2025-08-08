@@ -29,25 +29,39 @@ void Game::place_aliens(int amount, sf::Texture& texture, int rows, int elms){
     }
 }
 
+void Game::show_lasers(){
+    std::vector<Laser*> lasers = player->get_lasers();
+    for(int i=0;i<lasers.size();i++){
+        game_layer.add_to_layer(lasers.at(i)->get_sprite());
+    }
+}
+
 void Game::start() {
     // The clock is needed to control the speed of movement
     sf::Clock clock;
 
-    sf::Texture texture;
+    sf::Texture player_texture;
 
-    // load player sprite 
-    if(!texture.loadFromFile("assets/sprites/player.png")){
-        std::cerr << "Could not load player sprite" << std::endl;
+    // load player texture 
+    if(!player_texture.loadFromFile("assets/sprites/player.png")){
+        std::cerr << "Could not load player texture" << std::endl;
+        exit(1);
+    }
+
+    sf::Texture laser_texture;
+    // load laser texture 
+    if(!laser_texture.loadFromFile("assets/sprites/laser.png")){
+        std::cerr << "Could not load laser texture" << std::endl;
         exit(1);
     }
 
     // create player
-    player = new Player(texture);
+    player = new Player(player_texture, laser_texture);
 
     sf::Texture alien_texture;
-    // load alien sprite
+    // load alien texture
     if(!alien_texture.loadFromFile("assets/sprites/alien.png")){
-        std::cerr << "Could not load alien sprite" << std::endl;
+        std::cerr << "Could not load alien texture" << std::endl;
         exit(1);
     }
 
@@ -86,6 +100,8 @@ bool Game::input() {
             } else if (keyPressed->code == sf::Keyboard::Key::Escape) {
                 window.close();
                 return true;
+            } else if (keyPressed->code == sf::Keyboard::Key::Space){ // Space to shoot
+                player->shoot_laser();
             }
     }
     return false;
@@ -116,14 +132,16 @@ void Game::update(float time_passed) {
         }
     }
 
+
+    player->update();
 }
 
 void Game::add_aliens_to_layer() {
-        for (auto& alien : aliens) {
+    for (auto& alien : aliens) {
             if(alien.is_alive()) {
-                game_layer.add_to_layer(alien.get_sprite());
+            game_layer.add_to_layer(alien.get_sprite());
             }
-        }
+    }
 }
 
 void Game::finish() {
@@ -142,6 +160,9 @@ void Game::draw() {
     // add alien sprites to layer
     add_aliens_to_layer();
     
+    // show the lasers
+    show_lasers();
+
     game_layer.draw();
 
     window.display();
