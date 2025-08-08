@@ -134,6 +134,35 @@ void Game::update(float time_passed) {
 
 
     player->update();
+
+    // check for player_laser -> alien hit
+    
+    std::vector<Laser*> lasers = player->get_lasers();
+    for(int laser_idx=0;laser_idx<lasers.size();laser_idx++){
+        for(int alien_idx=0;alien_idx<aliens.size();alien_idx++){
+            Laser* laser = lasers.at(laser_idx);
+            Alien alien = aliens.at(alien_idx);
+
+            float laser_x = laser->get_pos_x();
+            float laser_y = laser->get_pos_y();
+
+            float alien_x = alien.get_pos_x();
+            float alien_y = alien.get_pos_y();
+            float half_size = alien.get_px_size() / 2.0f;
+
+            if (
+                laser_x >= (alien_x - half_size) &&
+                laser_x <= (alien_x + half_size) &&
+                laser_y >= (alien_y - half_size) &&
+                laser_y <= (alien_y + half_size)
+            ) {
+                // Hit detected
+                exit(0);
+            }
+
+        }
+    }
+
 }
 
 void Game::add_aliens_to_layer() {

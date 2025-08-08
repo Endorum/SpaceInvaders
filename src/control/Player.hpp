@@ -63,7 +63,7 @@ public:
 
 
     void shoot_laser(){
-        Laser* laser = new Laser(position, vert_pos - height/2.f, laser_texture);
+        Laser* laser = new Laser(position, vert_pos - height/2.f, laser_texture, 5);
         lasers.push_back(laser);
     }
 
