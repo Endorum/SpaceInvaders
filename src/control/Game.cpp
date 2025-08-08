@@ -5,7 +5,7 @@
 
 #include "../model/Constants.hpp"
 
-Game::Game() : window(sf::VideoMode({constants::VIEW_WIDTH, constants::VIEW_HEIGHT}), "Space Invaders"),
+Game::Game() : window(sf::VideoMode({static_cast<unsigned int>(constants::VIEW_WIDTH), static_cast<unsigned int>(constants::VIEW_HEIGHT)}), "Space Invaders"),
     view(sf::FloatRect(sf::Vector2f({0,-constants::VIEW_HEIGHT}), sf::Vector2f({constants::VIEW_WIDTH,constants::VIEW_HEIGHT}))),
     game_layer(window) {
     // limit frame rate
@@ -24,7 +24,7 @@ void Game::place_aliens(int amount, sf::Texture& texture, int rows, int elms){
     for(int i = 0; i < amount; i++){
         x_pos = constants::ALIEN_START_X + (i % elms) * constants::ALIEN_SPACING_X; // 1.5f is the space between aliens
         y_pos = constants::ALIEN_START_Y + (i / elms) * constants::ALIEN_SPACING_Y; // 1.5f is the space between aliens
-        Alien alien(x_pos, y_pos, texture);
+        Alien alien = Alien(x_pos, y_pos, texture);
         aliens.push_back(alien);
     }
 }
@@ -84,16 +84,6 @@ void Game::start() {
     }
 }
 
-void Game::processInput(){
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){
-        player->move_right();
-    }
-
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)){
-        player->move_left();
-    }
-}
-
 // returns true, if the window has been closed
 bool Game::input() {
     while (std::optional<sf::Event> event = window.pollEvent()) {
@@ -119,8 +109,29 @@ bool Game::input() {
 }
 
 void Game::update(float time_passed) {
-    // TODO: update the game objects with the current time stamp
-    //processInput();
+    bool direction_right = alien_direction_right;
+    bool direction_changed = false;
+    for(Alien& alien : aliens) {
+        if(direction_right) {
+            alien.move_horizontally(alien_speed * time_passed);
+        } else {
+            alien.move_horizontally(-alien_speed * time_passed);
+        }
+        if(!alien.in_bounds() && !direction_changed) {
+            alien_direction_right = !alien_direction_right;
+            direction_changed = true;
+        }
+        if(!alien.in_bounds_vertical()) {
+            finish();
+            return; // end the game if any alien has reached the bottom of the screen
+        }
+    }
+    if(direction_changed) {
+        for(Alien& alien : aliens) {
+            alien.move_vertically(constants::ALIEN_SPACING_Y);
+        }
+    }
+
 
     player->update();
 
@@ -155,9 +166,15 @@ void Game::update(float time_passed) {
 }
 
 void Game::add_aliens_to_layer() {
-    for(int i=0;i<aliens.size();i++){
-        game_layer.add_to_layer(aliens.at(i).get_sprite());
+    for (auto& alien : aliens) {
+            if(alien.is_alive()) {
+            game_layer.add_to_layer(alien.get_sprite());
+            }
     }
+}
+
+void Game::finish() {
+    window.close();
 }
 
 void Game::draw() {
