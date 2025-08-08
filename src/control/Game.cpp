@@ -124,7 +124,11 @@ void Game::update(float time_passed) {
 
     player->update();
 
+    
     // check for player_laser -> alien hit
+    std::vector<int> lasers_to_remove;
+    std::vector<int> aliens_to_remove;
+
     
     std::vector<Laser*> lasers = player->get_lasers();
     for(int laser_idx=0;laser_idx<lasers.size();laser_idx++){
@@ -146,7 +150,10 @@ void Game::update(float time_passed) {
                 laser_y <= (alien_y + half_size)
             ) {
                 // Hit detected
-                exit(0);
+                // mark for removal
+                lasers_to_remove.push_back(laser_idx);
+                aliens_to_remove.push_back(alien_idx);
+                break; // One laser can only hit one alien
             }
 
         }
