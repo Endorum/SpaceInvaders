@@ -13,7 +13,7 @@ public:
         sprite.setTexture(t);
 
         sprite.setScale({3.f, 3.f});
-        sprite.setOrigin(sf::Vector2f( size/2.f, 0));
+        sprite.setOrigin(sf::Vector2f( size/2.f, size/2.f ));
         sprite.setPosition(sf::Vector2f( pos_x, pos_y ));
 
     }
@@ -24,15 +24,7 @@ public:
     }
 
     const sf::Sprite& get_sprite() const {
-        return sprite; // Always return the sprite, check alive status separately
-    }
-
-    bool is_alive() const {
-        return alive;
-    }
-
-    void kill() {
-        alive = false;
+        return sprite;
     }
 
     int get_pos_x() const {return pos_x;}
@@ -43,24 +35,31 @@ public:
 
     bool in_bounds(){
         return (
-            pos_x >= 0 && pos_x < constants::VIEW_WIDTH - constants::ALIEN_SPACING_X - 10
-        );
-    }
-
-    bool in_bounds_vertical(){
-        return (
-            pos_y < -100
+            (pos_x - size/2 >= 0) && /* left side */
+            (pos_x + size/2 <= constants::VIEW_WIDTH) && /* right side */
+            (pos_y - size/2 >= 0) && /* top side */
+            (pos_y + size/2 <= constants::VIEW_HEIGHT) /* bottom side */
         );
     }
 
     // amount <= 0 -> to the left, amount >= 0 -> to the right
-    void move_vertically(float amount){
-        pos_y += amount;
-        update_sprite_position(); 
-    }
-    void move_horizontally(float amount){
+    void move_vertically(int amount){
         pos_x += amount;
-        update_sprite_position(); 
+
+        // set position back if out of bounds
+        if(!in_bounds()) {
+            pos_x -= amount;
+        }
+    }
+
+    // amount <= 0 -> up, amount >= 0 -> down
+    void move_horizontally(int amount){
+        pos_y += amount;
+
+        // set position back if out of bounds
+        if(!in_bounds()){
+            pos_y -= amount;
+        }
     }
 
 
