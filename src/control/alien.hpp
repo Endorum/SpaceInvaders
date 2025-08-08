@@ -27,6 +27,10 @@ public:
         return sprite;
     }
 
+    int get_pos_x() const {return pos_x;}
+    int get_pos_y() const {return pos_y;}
+
+    int get_px_size() const { return size*32; } // sprite is 32x32 px
 
 
     bool in_bounds(){

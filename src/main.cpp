@@ -5,5 +5,5 @@ int main() {
 
     game.start();
 
-    
+    ;
 }
