@@ -28,7 +28,7 @@ private:
     // processes user input, returns true if window has been closed
     bool input();
     void place_aliens(int amount, sf::Texture& texture, int rows = 5, int elms = 10);
-    void processInput();
+    void finish();
 
     // updates all game elements
     void update(float time_passed);
@@ -47,6 +47,10 @@ private:
     Player* player;
 
     std::vector<Alien> aliens;
+
+    float alien_speed = constants::ALIEN_SPEED;
+
+    bool alien_direction_right = true;
 
 };
 
