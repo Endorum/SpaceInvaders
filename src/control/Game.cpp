@@ -68,7 +68,6 @@ void Game::start() {
 
     // place aliens in the game
     place_aliens(constants::ALIEN_COLUMNS * constants::ALIEN_ROWS, alien_texture); // 4x10
-    // place_aliens(1, alien_texture); // 4x10
 
     while (window.isOpen()) {
         // Restart the clock and save the elapsed time into elapsed_time
@@ -122,14 +121,10 @@ bool Game::input() {
 
 void Game::update(float time_passed) {
     // TODO: update the game objects with the current time stamp
-    //processInput();
 
     player->update();
 
     check_alien_hits();
-    
-
-    // processInput();
 
 }
 
@@ -141,7 +136,7 @@ void Game::add_aliens_to_layer() {
 
 void Game::check_alien_hits() {
     // check for player_laser -> alien hit
-    std::vector<Laser*> lasers_to_remove;
+    std::vector<int> lasers_to_remove;
     std::vector<Alien*> aliens_to_remove;
 
     
@@ -161,23 +156,23 @@ void Game::check_alien_hits() {
 
             float alien_x = alien.get_pos_x();
             float alien_y = alien.get_pos_y();
-
-            std::cout << "laser_x: " << laser_x << " laser_y: " << laser_y << std::endl;
-            std::cout << "alien_x: " << alien_x << " alien_y: " << alien_y << "\n" <<std::endl;
             
+
+            // assuming the lasers have no width or height, can be changed later
             if(
                 laser_x >= (alien_x - (alien.get_bound_size_x() / 2.f)) &&
                 laser_x <= (alien_x + (alien.get_bound_size_x() / 2.f)) &&
                 laser_y >= (alien_y - (alien.get_bound_size_y() / 2.f)) && 
                 laser_y <= (alien_y + (alien.get_bound_size_y() / 2.f))
             ){
-                lasers_to_remove.push_back(laser);
+                lasers_to_remove.push_back(laser_idx);
                 aliens_to_remove.push_back(&alien);
                 break; // One laser can only hit one alien
             }
         }
     }
 
+    // Remove hit aliens
     for(Alien* alien_ptr : aliens_to_remove){
         for(auto it = aliens.begin(); it != aliens.end(); it++){
             if(&(*it) == alien_ptr){
@@ -187,13 +182,11 @@ void Game::check_alien_hits() {
         }
     }
 
-    for(Laser* laser_ptr : lasers_to_remove){
-        for(auto it = lasers.begin(); it != lasers.end(); it++){
-            if(*it == laser_ptr){
-                lasers.erase(it);
-                break;
-            }
-        }
+    // Remove lasers
+    std::sort(lasers_to_remove.rbegin(), lasers_to_remove.rend());
+    for (int idx : lasers_to_remove) {
+        delete lasers[idx];
+        lasers.erase(lasers.begin() + idx);
     }
 }
 
