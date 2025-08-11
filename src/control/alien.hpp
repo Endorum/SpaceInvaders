@@ -51,7 +51,6 @@ public:
 
     // amount <= 0 -> to the left, amount >= 0 -> to the right
     void move_vertically(int amount){
-        std::cout << "moving alien vertically: " << amount << " pxs" << std::endl;
         pos_x += amount;
 
         // set position back if out of bounds
@@ -64,7 +63,6 @@ public:
 
     // amount <= 0 -> up, amount >= 0 -> down
     void move_horizontally(int amount){
-        std::cout << "moving alien horizontally: " << amount << " pxs" << std::endl;
         pos_y += amount;
 
         // set position back if out of bounds
