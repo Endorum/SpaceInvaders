@@ -20,6 +20,7 @@ void Game::place_aliens(int amount, sf::Texture& texture, int rows, int elms){
     float x_pos = 0;
     float y_pos = 0;
 
+
     aliens.clear();
     for(int i = 0; i < amount; i++){
         x_pos = constants::ALIEN_START_X + (i % elms) * constants::ALIEN_SPACING_X; // 1.5f is the space between aliens
@@ -66,7 +67,8 @@ void Game::start() {
     }
 
     // place aliens in the game
-    place_aliens(40, alien_texture);
+    place_aliens(constants::ALIEN_COLUMNS * constants::ALIEN_ROWS, alien_texture); // 4x10
+    // place_aliens(1, alien_texture); // 4x10
 
     while (window.isOpen()) {
         // Restart the clock and save the elapsed time into elapsed_time
@@ -124,40 +126,10 @@ void Game::update(float time_passed) {
 
     player->update();
 
+    check_alien_hits();
     
-    // check for player_laser -> alien hit
-    std::vector<int> lasers_to_remove;
-    std::vector<int> aliens_to_remove;
 
-    
-    std::vector<Laser*> lasers = player->get_lasers();
-    for(int laser_idx=0;laser_idx<lasers.size();laser_idx++){
-        for(int alien_idx=0;alien_idx<aliens.size();alien_idx++){
-            Laser* laser = lasers.at(laser_idx);
-            Alien alien = aliens.at(alien_idx);
-
-            float laser_x = laser->get_pos_x();
-            float laser_y = laser->get_pos_y();
-
-            float alien_x = alien.get_pos_x();
-            float alien_y = alien.get_pos_y();
-            float half_size = alien.get_px_size() / 2.0f;
-
-            if (
-                laser_x >= (alien_x - half_size) &&
-                laser_x <= (alien_x + half_size) &&
-                laser_y >= (alien_y - half_size) &&
-                laser_y <= (alien_y + half_size)
-            ) {
-                // Hit detected
-                // mark for removal
-                lasers_to_remove.push_back(laser_idx);
-                aliens_to_remove.push_back(alien_idx);
-                break; // One laser can only hit one alien
-            }
-
-        }
-    }
+    // processInput();
 
 }
 
@@ -167,22 +139,80 @@ void Game::add_aliens_to_layer() {
     }
 }
 
+void Game::check_alien_hits() {
+    // check for player_laser -> alien hit
+    std::vector<Laser*> lasers_to_remove;
+    std::vector<Alien*> aliens_to_remove;
+
+    
+    std::vector<Laser*>& lasers = player->get_lasers();
+    for (int laser_idx = 0; laser_idx < lasers.size(); laser_idx++) {
+        Laser* laser = lasers[laser_idx];
+        float laser_x = laser->get_pos_x();
+        float laser_y = laser->get_pos_y();
+
+        for (int alien_idx = 0; alien_idx < aliens.size(); alien_idx++) {
+            Alien& alien = aliens[alien_idx];
+
+
+
+            float laser_x = laser->get_pos_x();
+            float laser_y = laser->get_pos_y();
+
+            float alien_x = alien.get_pos_x();
+            float alien_y = alien.get_pos_y();
+
+            std::cout << "laser_x: " << laser_x << " laser_y: " << laser_y << std::endl;
+            std::cout << "alien_x: " << alien_x << " alien_y: " << alien_y << "\n" <<std::endl;
+            
+            if(
+                laser_x >= (alien_x - (alien.get_bound_size_x() / 2.f)) &&
+                laser_x <= (alien_x + (alien.get_bound_size_x() / 2.f)) &&
+                laser_y >= (alien_y - (alien.get_bound_size_y() / 2.f)) && 
+                laser_y <= (alien_y + (alien.get_bound_size_y() / 2.f))
+            ){
+                lasers_to_remove.push_back(laser);
+                aliens_to_remove.push_back(&alien);
+                break; // One laser can only hit one alien
+            }
+        }
+    }
+
+    for(Alien* alien_ptr : aliens_to_remove){
+        for(auto it = aliens.begin(); it != aliens.end(); it++){
+            if(&(*it) == alien_ptr){
+                aliens.erase(it);
+                break;
+            }
+        }
+    }
+
+    for(Laser* laser_ptr : lasers_to_remove){
+        for(auto it = lasers.begin(); it != lasers.end(); it++){
+            if(*it == laser_ptr){
+                lasers.erase(it);
+                break;
+            }
+        }
+    }
+}
+
 void Game::draw() {
     window.clear();
 
     game_layer.clear();
     
-
+    
     // add player sprite to layer
     game_layer.add_to_layer(player->get_sprite());
-
+    
     // add alien sprites to layer
     add_aliens_to_layer();
     
     // show the lasers
     show_lasers();
-
+    
     game_layer.draw();
-
+    
     window.display();
 }

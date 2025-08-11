@@ -39,6 +39,8 @@ private:
     void show_lasers();
     void add_aliens_to_layer();
 
+    void check_alien_hits();
+
     // view area and layers
     sf::View view;
     Layer game_layer;

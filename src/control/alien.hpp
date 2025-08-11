@@ -12,8 +12,8 @@ public:
         size = 3; // default size of alien sprite
         sprite.setTexture(t);
 
-        sprite.setScale({3.f, 3.f});
-        sprite.setOrigin(sf::Vector2f( size/2.f, size/2.f ));
+        sprite.setOrigin(sf::Vector2f( 16.f, 16.f ));
+        sprite.setScale({size, size});
         sprite.setPosition(sf::Vector2f( pos_x, pos_y ));
 
     }
@@ -27,10 +27,15 @@ public:
         return sprite;
     }
 
-    int get_pos_x() const {return pos_x;}
-    int get_pos_y() const {return pos_y;}
+    
 
-    int get_px_size() const { return size*32; } // sprite is 32x32 px
+    float get_pos_x() const {return pos_x;}
+    float get_pos_y() const {return pos_y;}
+
+    float get_px_size() const { return size*32; } // sprite is 32x32 px
+
+    float get_bound_size_x() const { return 14 * size; }
+    float get_bound_size_y() const { return 9 * size; }
 
 
     bool in_bounds(){

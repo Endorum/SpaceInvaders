@@ -30,9 +30,14 @@ public:
         return sprite;
     }    
 
-    int get_pos_x() const {return pos_x;}
-    int get_pos_y() const {return pos_y;}
+    float get_pos_x() const {return pos_x;}
+    float get_pos_y() const {return pos_y;}
 
+    float get_width() const { return width; }
+    float get_height() const { return height; }
+
+    float get_bound_size_x() const { return 3 * size; }
+    float get_bound_size_y() const { return 7 * size; }
    
 
     // return true if out of bounds, so it can be deleted.
@@ -42,7 +47,8 @@ public:
         update_sprite_position();
 
 
-        if(pos_y > constants::VIEW_HEIGHT + 10){
+        // destroy the laser if its out of bounds
+        if(pos_y > constants::VIEW_HEIGHT + 10 || pos_y < -constants::VIEW_HEIGHT){
             return true;
         }
 
@@ -59,7 +65,8 @@ private:
 
     int size;
 
-    
+    float width = 3.f;
+    float height = 7.f;
 
     
 

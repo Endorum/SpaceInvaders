@@ -84,7 +84,7 @@ public:
         }
     }
 
-    std::vector<Laser*> get_lasers(){
+    std::vector<Laser*>& get_lasers(){
         return lasers;
     }
 
