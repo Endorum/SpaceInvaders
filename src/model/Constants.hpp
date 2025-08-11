@@ -11,4 +11,6 @@ namespace constants {
     constexpr float ALIEN_START_Y = -500.0f; // starting y position for the first alien
     constexpr float ALIEN_SPACING_X = 50.0f;
     constexpr float ALIEN_SPACING_Y = 50.0f;
+    constexpr float ALIEN_SPEED = 100.0f; // speed of alien movement in pixels per second
+    constexpr float ALIEN_SPEED_VERTICAL = 200.0f; 
 }

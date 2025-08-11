@@ -27,6 +27,11 @@ public:
         return sprite;
     }
 
+    bool in_bounds_vertical(){
+        return (
+            pos_y < -100
+        );
+    }
     
 
     float get_pos_x() const {return pos_x;}
@@ -40,31 +45,34 @@ public:
 
     bool in_bounds(){
         return (
-            (pos_x - size/2 >= 0) && /* left side */
-            (pos_x + size/2 <= constants::VIEW_WIDTH) && /* right side */
-            (pos_y - size/2 >= 0) && /* top side */
-            (pos_y + size/2 <= constants::VIEW_HEIGHT) /* bottom side */
+            pos_x >= 0 && pos_x < constants::VIEW_WIDTH - constants::ALIEN_SPACING_X - 10
         );
     }
 
     // amount <= 0 -> to the left, amount >= 0 -> to the right
     void move_vertically(int amount){
+        std::cout << "moving alien vertically: " << amount << " pxs" << std::endl;
         pos_x += amount;
 
         // set position back if out of bounds
         if(!in_bounds()) {
             pos_x -= amount;
         }
+
+        update_sprite_position();
     }
 
     // amount <= 0 -> up, amount >= 0 -> down
     void move_horizontally(int amount){
+        std::cout << "moving alien horizontally: " << amount << " pxs" << std::endl;
         pos_y += amount;
 
         // set position back if out of bounds
         if(!in_bounds()){
             pos_y -= amount;
         }
+
+        update_sprite_position();
     }
 
 

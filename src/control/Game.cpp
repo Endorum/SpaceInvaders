@@ -126,6 +126,8 @@ void Game::update(float time_passed) {
 
     check_alien_hits();
 
+    move_aliens(time_passed);
+
 }
 
 void Game::add_aliens_to_layer() {
@@ -190,6 +192,36 @@ void Game::check_alien_hits() {
     }
 }
 
+void Game::move_aliens(float time_passed) {
+    
+    bool direction_right = alien_direction_right;
+    bool direction_changed = false;
+    for(Alien& alien : aliens) {
+        if(direction_right) {
+            alien.move_horizontally(alien_speed * time_passed);
+        } else {
+            alien.move_horizontally(-alien_speed * time_passed);
+        }
+        if(!alien.in_bounds() && !direction_changed) {
+            alien_direction_right = !alien_direction_right;
+            direction_changed = true;
+        }
+        if(!alien.in_bounds_vertical()) {
+            finish();
+            return; // end the game if any alien has reached the bottom of the screen
+        }
+    }
+    
+    if(direction_changed) {
+        for(Alien& alien : aliens) {
+            alien.move_vertically(constants::ALIEN_SPACING_Y);
+        }
+    }
+
+
+    
+}
+
 void Game::draw() {
     window.clear();
 
@@ -208,4 +240,8 @@ void Game::draw() {
     game_layer.draw();
     
     window.display();
+}
+
+void Game::finish() {
+    window.close();
 }

@@ -34,12 +34,16 @@ private:
     // draws the scene
     void draw();
 
+    void finish();
+
     sf::RenderWindow window;
 
     void show_lasers();
     void add_aliens_to_layer();
 
     void check_alien_hits();
+
+    void move_aliens(float time_passed);
 
     // view area and layers
     sf::View view;
@@ -48,6 +52,10 @@ private:
     Player* player;
 
     std::vector<Alien> aliens;
+
+    float alien_speed = constants::ALIEN_SPEED;
+
+    bool alien_direction_right = true;
 
 };
 
