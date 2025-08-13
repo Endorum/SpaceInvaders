@@ -44,31 +44,21 @@ public:
 
 
     bool in_bounds(){
-        return (
-            pos_x >= 0 && pos_x < constants::VIEW_WIDTH - constants::ALIEN_SPACING_X - 10
-        );
+        float half_bound_size = get_bound_size_x() /2;
+        return 
+            pos_x >= half_bound_size && pos_x < constants::VIEW_WIDTH - half_bound_size;
     }
 
     // amount <= 0 -> to the left, amount >= 0 -> to the right
     void move_vertically(int amount){
-        pos_x += amount;
-
-        // set position back if out of bounds
-        if(!in_bounds()) {
-            pos_x -= amount;
-        }
+        pos_y += amount;
 
         update_sprite_position();
     }
 
     // amount <= 0 -> up, amount >= 0 -> down
     void move_horizontally(int amount){
-        pos_y += amount;
-
-        // set position back if out of bounds
-        if(!in_bounds()){
-            pos_y -= amount;
-        }
+        pos_x += amount;
 
         update_sprite_position();
     }
