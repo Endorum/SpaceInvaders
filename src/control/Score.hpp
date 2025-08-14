@@ -18,7 +18,6 @@ private:
     int score;
 
     sf::Text text;
-    sf::Font font;
 };
 
 #endif // SCORE_HPP

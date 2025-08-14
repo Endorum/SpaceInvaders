@@ -56,6 +56,10 @@ public:
         update_sprite_position();
     }
 
+    std::vector<Laser*>& get_lasers() {
+        return lasers;
+    }
+
     // amount <= 0 -> up, amount >= 0 -> down
     void move_horizontally(int amount){
         pos_x += amount;
@@ -63,10 +67,38 @@ public:
         update_sprite_position();
     }
 
+    void shoot_laser() {
+        Laser* laser = new Laser(pos_x, pos_y + get_bound_size_y() / 2.f, 5);
+        lasers.push_back(laser);
+    }
+
+    void destroy_laser(Laser* laser) {
+        auto it = std::find(lasers.begin(), lasers.end(), laser);
+        if (it != lasers.end()) {
+            delete *it; // delete the laser object
+            lasers.erase(it); // remove from the vector
+        }
+
+    }
+
+    void update(){
+        for(auto it = lasers.begin(); it != lasers.end(); ){
+            Laser* laser = *it;
+            bool destroy = laser->move_down();
+
+            if(destroy){
+                delete laser;
+                it = lasers.erase(it);
+            }else it++;
+        }
+    }
+
 
 private:
     float pos_x;
     float pos_y;
+
+    std::vector<Laser*> lasers;
 
 
     // assuming aliens are square and not rectangular

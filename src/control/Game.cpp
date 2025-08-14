@@ -6,6 +6,10 @@
 #include "../model/Constants.hpp"
 #include "Score.hpp"
 
+#include "TextFactory.hpp"
+
+#include "RandomUtils.hpp"
+
 Game::Game() : window(sf::VideoMode({constants::VIEW_WIDTH, constants::VIEW_HEIGHT}), "Space Invaders"),
     view(sf::FloatRect(sf::Vector2f({0,-constants::VIEW_HEIGHT}), sf::Vector2f({constants::VIEW_WIDTH,constants::VIEW_HEIGHT}))),
     game_layer(window), score(0) {
@@ -38,6 +42,12 @@ void Game::show_lasers(){
     for(int i=0;i<lasers.size();i++){
         game_layer.add_to_layer(lasers.at(i)->get_sprite());
     }
+    for(Alien& alien : aliens) {
+        std::vector<Laser*>& alien_lasers = alien.get_lasers();
+        for(int i=0;i<alien_lasers.size();i++){
+            game_layer.add_to_layer(alien_lasers.at(i)->get_sprite());
+        }
+    }
 }
 
 void Game::start() {
@@ -52,15 +62,8 @@ void Game::start() {
         exit(1);
     }
 
-    sf::Texture laser_texture;
-    // load laser texture 
-    if(!laser_texture.loadFromFile("assets/sprites/laser.png")){
-        std::cerr << "Could not load laser texture" << std::endl;
-        exit(1);
-    }
-
     // create player
-    player = new Player(player_texture, laser_texture);
+    player = new Player(player_texture);
 
     sf::Texture alien_texture;
     // load alien texture
@@ -129,13 +132,48 @@ void Game::update(float time_passed) {
 
     check_alien_hits();
 
+    check_player_hits();
+
     move_aliens(time_passed);
 
 }
 
-void Game::add_aliens_to_layer() {
+void Game::show_aliens() {
     for(int i=0;i<aliens.size();i++){
         game_layer.add_to_layer(aliens.at(i).get_sprite());
+    }
+}
+
+bool Game::check_collision(sf::Sprite s1, sf::Sprite s2) {
+    // check if two sprites collide
+    float s1_x = s1.getPosition().x;
+    float s1_y = s1.getPosition().y;
+    float s2_x = s2.getPosition().x;
+    float s2_y = s2.getPosition().y;
+
+    if(
+        s1_x >= (s2_x - (s2.getGlobalBounds().size.x / 2.f)) &&
+        s1_x <= (s2_x + (s2.getGlobalBounds().size.x / 2.f)) &&
+        s1_y >= (s2_y - (s2.getGlobalBounds().size.y / 2.f)) && 
+        s1_y <= (s2_y + (s2.getGlobalBounds().size.y / 2.f))
+    ) {
+        return true;
+    }
+    return false;
+
+}
+
+void Game::check_player_hits() {
+    for(Alien& alien : aliens) {
+        for(Laser* laser : alien.get_lasers()) {
+            if(check_collision(laser->get_sprite(), player->get_sprite())) {
+                player->decrease_health();
+                alien.destroy_laser(laser);
+                if(player->get_health() <= 0) {
+                    finish(); // end the game if player health is 0
+                }
+            }
+        }
     }
 }
 
@@ -201,6 +239,10 @@ void Game::move_aliens(float time_passed) {
     bool direction_right = alien_direction_right;
     bool direction_changed = false;
     for(Alien& alien : aliens) {
+        if(RandomUtils::get_random_int(0, 1000) < 1) { // 0.1% chance to shoot
+            alien.shoot_laser();
+        }
+        alien.update();
         if(direction_right) {
             alien.move_horizontally(alien_speed);
         } else {
@@ -236,9 +278,13 @@ void Game::draw() {
     game_layer.add_to_layer(player->get_sprite());
 
     game_layer.add_to_layer(score.get_text());
-    
-    // add alien sprites to layer
-    add_aliens_to_layer(); 
+
+    sf::Text health = TextFactory::create_score_text("Health: " + std::to_string(player->get_health()), 20, 10, -constants::VIEW_HEIGHT + 50);
+
+    game_layer.add_to_layer(health);
+
+    // show the aliens
+    show_aliens(); 
     
     // show the lasers
     show_lasers();

@@ -14,8 +14,8 @@
 
 class Player{
 public:
-    Player(sf::Texture t, sf::Texture lt) 
-        : position(constants::VIEW_WIDTH/2), health(3), width(32), height(32), vert_pos(-40), texture(t),  sprite(t), laser_texture(lt) {
+    Player(sf::Texture t) 
+        : position(constants::VIEW_WIDTH/2), health(3), width(32), height(32), vert_pos(-40), texture(t), sprite(t) {
 
         
 
@@ -63,8 +63,24 @@ public:
 
 
     void shoot_laser(){
-        Laser* laser = new Laser(position, vert_pos - height/2.f, laser_texture, 5);
+        Laser* laser = new Laser(position, vert_pos - height/2.f, 5);
         lasers.push_back(laser);
+    }
+
+    float get_width() const {
+        return width;
+    }
+
+    void decrease_health() {
+        health--;
+    }
+
+    float get_height() const {
+        return height;
+    }
+
+    int get_health() const {
+        return health;
     }
 
     // update player, currently only updates the lasers
@@ -75,7 +91,7 @@ public:
         // Use Iterators so we can erase the laser safely
         for(auto it = lasers.begin(); it != lasers.end(); ){
             Laser* laser = *it;
-            bool destroy = laser->update();
+            bool destroy = laser->move_up();
 
             if(destroy){
                 delete laser;
@@ -117,8 +133,6 @@ private:
     
     sf::Sprite sprite;
     sf::Texture texture;
-
-    sf::Texture laser_texture;
 
     std::vector<Laser*> lasers; // int id for deletion
 
