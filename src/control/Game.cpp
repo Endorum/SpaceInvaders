@@ -4,10 +4,13 @@
 #include <optional>
 
 #include "../model/Constants.hpp"
+#include "Score.hpp"
 
 Game::Game() : window(sf::VideoMode({constants::VIEW_WIDTH, constants::VIEW_HEIGHT}), "Space Invaders"),
     view(sf::FloatRect(sf::Vector2f({0,-constants::VIEW_HEIGHT}), sf::Vector2f({constants::VIEW_WIDTH,constants::VIEW_HEIGHT}))),
-    game_layer(window) {
+    game_layer(window), score(0) {
+
+    
     // limit frame rate
     window.setFramerateLimit(constants::FRAME_RATE);
 
@@ -169,6 +172,7 @@ void Game::check_alien_hits() {
             ){
                 lasers_to_remove.push_back(laser_idx);
                 aliens_to_remove.push_back(&alien);
+                score.increase(10); // increase score by 10 for each alien hit
                 break; // One laser can only hit one alien
             }
         }
@@ -198,9 +202,9 @@ void Game::move_aliens(float time_passed) {
     bool direction_changed = false;
     for(Alien& alien : aliens) {
         if(direction_right) {
-            alien.move_horizontally(alien_speed * time_passed);
+            alien.move_horizontally(alien_speed);
         } else {
-            alien.move_horizontally(-alien_speed * time_passed);
+            alien.move_horizontally(-alien_speed);
         }
         if(!alien.in_bounds() && !direction_changed) {
             alien_direction_right = !alien_direction_right;
@@ -230,9 +234,11 @@ void Game::draw() {
     
     // add player sprite to layer
     game_layer.add_to_layer(player->get_sprite());
+
+    game_layer.add_to_layer(score.get_text());
     
     // add alien sprites to layer
-    add_aliens_to_layer();
+    add_aliens_to_layer(); 
     
     // show the lasers
     show_lasers();
