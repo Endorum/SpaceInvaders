@@ -5,8 +5,9 @@
 #include <vector>
 
 #include "../view/Layer.hpp"
+#include "Score.hpp"
 #include "Player.hpp"
-#include "alien.hpp"
+#include "Alien.hpp"
 
 
 
@@ -56,6 +57,8 @@ private:
     float alien_speed = constants::ALIEN_SPEED;
 
     bool alien_direction_right = true;
+
+    Score score;
 
 };
 
