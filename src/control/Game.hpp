@@ -40,11 +40,15 @@ private:
     sf::RenderWindow window;
 
     void show_lasers();
-    void add_aliens_to_layer();
+    void show_aliens();
 
     void check_alien_hits();
 
     void move_aliens(float time_passed);
+
+    void check_player_hits();
+
+    bool check_collision(sf::Sprite s1, sf::Sprite s2);
 
     // view area and layers
     sf::View view;
