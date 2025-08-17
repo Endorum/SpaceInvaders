@@ -120,9 +120,9 @@ bool Game::input() {
             } else if (keyPressed->code == sf::Keyboard::Key::Space){ // Space to shoot
                 player->shoot_laser();
             }
+        }
+        return false;
     }
-    return false;
-}
 }
 
 void Game::update(float time_passed) {
@@ -136,6 +136,7 @@ void Game::update(float time_passed) {
 
     move_aliens(time_passed);
 
+    processInput();
 }
 
 void Game::show_aliens() {

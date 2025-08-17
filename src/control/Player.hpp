@@ -49,12 +49,7 @@ private:
     int width;
     int height;
 
-    bool in_bounds(){
-        return (
-            (position - width/2 >= 0) && /* left side */
-            (position + width/2 <= constants::VIEW_WIDTH) /* right side */
-        );
-    }
+    bool in_bounds();
 
 
 

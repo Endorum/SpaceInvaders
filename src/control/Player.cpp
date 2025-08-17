@@ -87,3 +87,10 @@ void Player::update(){
 std::vector<Laser*>& Player::get_lasers(){
     return lasers;
 }
+
+bool Player::in_bounds(){
+    return (
+        (position - width/2 >= 0) && /* left side */
+        (position + width/2 <= constants::VIEW_WIDTH) /* right side */
+    );
+}
