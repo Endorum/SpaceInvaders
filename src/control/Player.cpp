@@ -1,0 +1,89 @@
+#include "Player.hpp"
+
+Player::Player(sf::Texture t) 
+    : position(constants::VIEW_WIDTH/2), health(3), width(32), height(32), vert_pos(-40), texture(t), sprite(t) {
+
+    
+
+
+    int start_pos = constants::VIEW_WIDTH/2;
+
+    sprite.setTexture(texture);
+
+
+    sprite.setScale({2.f,2.f});
+    sprite.setOrigin(sf::Vector2f( width / 2.f, height / 2.f) );
+    sprite.setPosition(sf::Vector2f( start_pos, vert_pos ) );
+    
+
+}
+
+void Player::update_sprite_position(){
+    sprite.setPosition(sf::Vector2f( position, vert_pos ) );
+}
+
+void Player::move_left(int amount){
+    position -= amount;
+
+    if(!in_bounds()){
+        position += amount;
+    }
+
+    update_sprite_position();
+} 
+
+void Player::move_right(int amount){
+    position += amount;
+
+    if(!in_bounds()){
+        position -= amount;
+    }
+
+    update_sprite_position();
+}
+
+const sf::Sprite& Player::get_sprite() const {
+    return sprite;
+}
+
+void Player::shoot_laser(){
+    Laser* laser = new Laser(position, vert_pos - height/2.f, 5);
+    lasers.push_back(laser);
+}
+
+float Player::get_width() const {
+    return width;
+}
+
+void Player::decrease_health() {
+    health--;
+}
+
+float Player::get_height() const {
+    return height;
+}
+
+int Player::get_health() const {
+    return health;
+}
+
+// update player, currently only updates the lasers
+void Player::update(){
+    // check for health etc.
+
+
+    // Use Iterators so we can erase the laser safely
+    for(auto it = lasers.begin(); it != lasers.end(); ){
+        Laser* laser = *it;
+        bool destroy = laser->move_up();
+
+        if(destroy){
+            delete laser;
+            it = lasers.erase(it);
+        }else it++;
+    }
+}
+
+std::vector<Laser*>& Player::get_lasers(){
+    return lasers;
+}

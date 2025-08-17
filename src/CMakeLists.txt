@@ -5,6 +5,8 @@ set(ModelSources
 # Controller
 set(ControlSources
     ${CMAKE_CURRENT_SOURCE_DIR}/control/Game.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/control/Health.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/control/Player.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/control/Score.cpp
     )
 
