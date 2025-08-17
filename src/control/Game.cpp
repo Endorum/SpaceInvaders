@@ -74,7 +74,6 @@ void Game::start() {
 
     // place aliens in the game
     place_aliens(constants::ALIEN_COLUMNS * constants::ALIEN_ROWS, alien_texture); // 4x10
-    place_aliens(1, alien_texture); // 4x10
 
     while (window.isOpen()) {
         // Restart the clock and save the elapsed time into elapsed_time
@@ -244,6 +243,10 @@ void Game::move_aliens(float time_passed) {
     
     bool direction_right = alien_direction_right;
     bool direction_changed = false;
+
+    // increase speed over time
+    alien_speed += acceleration;
+
     for(Alien& alien : aliens) {
 
         if(RandomUtils::get_random_int(0, 1000) < 1) { // 0.1% chance to shoot
@@ -251,8 +254,7 @@ void Game::move_aliens(float time_passed) {
         }
         alien.update();
 
-        // increase speed over time
-        alien_speed += acceleration;
+        
         
         if(direction_right) {
             alien.move_horizontally(alien_speed);
