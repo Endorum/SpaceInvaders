@@ -251,7 +251,8 @@ void Game::move_aliens(float time_passed) {
         }
         alien.update();
 
-        alien_speed += acceleration
+        // increase speed over time
+        alien_speed += acceleration;
         
         if(direction_right) {
             alien.move_horizontally(alien_speed);

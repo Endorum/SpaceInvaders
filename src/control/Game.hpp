@@ -59,7 +59,7 @@ private:
     std::vector<Alien> aliens;
 
     float alien_speed = constants::ALIEN_SPEED;
-    float acceleration = 0.01; // increase speed by acceleration
+    float acceleration = 0.002; // increase speed by acceleration every step
 
     bool alien_direction_right = true;
 
