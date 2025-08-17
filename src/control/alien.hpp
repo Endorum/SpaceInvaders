@@ -110,6 +110,8 @@ private:
     // TODO: think about how many points a kill yields
     int yielding_points = 0;
 
+    
+
     sf::Sprite sprite;
 
 }; 

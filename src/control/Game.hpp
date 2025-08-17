@@ -7,7 +7,7 @@
 #include "../view/Layer.hpp"
 #include "Score.hpp"
 #include "Player.hpp"
-#include "Alien.hpp"
+#include "alien.hpp"
 
 
 
@@ -59,6 +59,7 @@ private:
     std::vector<Alien> aliens;
 
     float alien_speed = constants::ALIEN_SPEED;
+    float acceleration = 0.01; // increase speed by acceleration
 
     bool alien_direction_right = true;
 

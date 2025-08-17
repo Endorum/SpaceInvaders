@@ -74,6 +74,7 @@ void Game::start() {
 
     // place aliens in the game
     place_aliens(constants::ALIEN_COLUMNS * constants::ALIEN_ROWS, alien_texture); // 4x10
+    place_aliens(1, alien_texture); // 4x10
 
     while (window.isOpen()) {
         // Restart the clock and save the elapsed time into elapsed_time
@@ -137,6 +138,10 @@ void Game::update(float time_passed) {
     move_aliens(time_passed);
 
     processInput();
+
+
+    
+
 }
 
 void Game::show_aliens() {
@@ -240,10 +245,14 @@ void Game::move_aliens(float time_passed) {
     bool direction_right = alien_direction_right;
     bool direction_changed = false;
     for(Alien& alien : aliens) {
+
         if(RandomUtils::get_random_int(0, 1000) < 1) { // 0.1% chance to shoot
             alien.shoot_laser();
         }
         alien.update();
+
+        alien_speed += acceleration
+        
         if(direction_right) {
             alien.move_horizontally(alien_speed);
         } else {
@@ -289,6 +298,14 @@ void Game::draw() {
     
     // show the lasers
     show_lasers();
+
+    // win if all aliens are dead
+    if(aliens.empty()){
+        // show "You Win" and wait for a few seconds?
+        sf::Text win_msg = TextFactory::create_score_text("You Win!", 20, (constants::VIEW_WIDTH / 2.f) - 50, -constants::VIEW_HEIGHT / 2.f);
+        game_layer.add_to_layer(win_msg);
+        // finish();
+    }
     
     game_layer.draw();
     
