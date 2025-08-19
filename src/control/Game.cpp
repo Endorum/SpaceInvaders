@@ -246,9 +246,9 @@ void Game::check_player_hits() {
             if(check_collision(laser->get_sprite(), player->get_sprite())) {
                 player->decrease_health();
                 alien.destroy_laser(laser);
-                if(player->get_health() <= 0) {
-                    finish(); // end the game if player health is 0
-                }
+                // if(player->get_health() <= 0) {
+                //     finish(); // end the game if player health is 0
+                // }
             }
         }
     }
@@ -361,7 +361,7 @@ void Game::move_aliens(float time_passed) {
             direction_changed = true;
         }
         if(!alien.in_bounds_vertical()) {
-            finish();
+            aliens_at_the_bottom = true;
             return; // end the game if any alien has reached the bottom of the screen
         }
     }
@@ -400,10 +400,6 @@ void Game::draw() {
     // show the bunkers
     show_bunkers();
 
-        
-
-    // exit(0);
-
     // win if all aliens are dead
     if(aliens.empty()){
         // show "You Win" and wait for a few seconds?
@@ -411,12 +407,22 @@ void Game::draw() {
         game_layer.add_to_layer(win_msg);
         // finish();
     }
+
+    if(player->get_health() <= 0 || aliens_at_the_bottom) {
+        sf::Text game_over_msg = TextFactory::create_score_text("Game Over", 20, (constants::VIEW_WIDTH / 2.f) - 50, -constants::VIEW_HEIGHT / 2.f);
+        game_layer.add_to_layer(game_over_msg);
+    }
     
     game_layer.draw();
     
     window.display();
 
     if(aliens.empty()) {
+        sleep(2);
+        finish();
+    }
+
+    if(player->get_health() <= 0 || aliens_at_the_bottom){
         sleep(2);
         finish();
     }

@@ -74,6 +74,8 @@ private:
 
     bool alien_direction_right = true;
 
+    bool aliens_at_the_bottom = false;
+
     Score score;
 
     std::vector<Bunker> bunkers;
