@@ -8,18 +8,18 @@
 class Bunker{
 public:
     Bunker( float init_pos_x, float init_pos_y, 
-            const sf::Texture& t_full_health, 
-            const sf::Texture& t_small_damage, 
-            const sf::Texture& t_large_damage, 
-            const sf::Texture& t_destroid) : 
+            const sf::Texture* t_full_health, 
+            const sf::Texture* t_small_damage, 
+            const sf::Texture* t_large_damage, 
+            const sf::Texture* t_destroid) : 
             
-            pos_x(init_pos_x), pos_y(init_pos_y), sprite(t_full_health),
+            pos_x(init_pos_x), pos_y(init_pos_y), sprite(*t_full_health),
             texture_small_damage(t_small_damage),
             texture_large_damage(t_large_damage),
             texture_destroid(t_destroid) {
 
-        size = 3;
-        sprite.setTexture(t_full_health); // initialized with full health sprite
+        size = 2;
+        sprite.setTexture(*t_full_health); // initialized with full health sprite
 
         health = 4; // 0 = gone, 1 = destroid, 2 = damaged alot, 3 = damaged a little, 4 = full health
 
@@ -48,15 +48,16 @@ public:
 
             case 0:
                 // make sprite invisable
+                sprite.setColor({0,0,0,255});
                 return true; 
             case 1:
-                sprite.setTexture(texture_destroid);
+                sprite.setTexture(*texture_destroid);
                 return false; 
             case 2:
-                sprite.setTexture(texture_large_damage);
+                sprite.setTexture(*texture_large_damage);
                 return false;
             case 3:
-                sprite.setTexture(texture_small_damage);
+                sprite.setTexture(*texture_small_damage);
                 return false;
             case 4: 
                 // texture should already be full health, from the constructor
@@ -75,10 +76,10 @@ private:
 
     int health;
 
-    // const sf::Texture& texture_full_health;
-    const sf::Texture& texture_small_damage;
-    const sf::Texture& texture_large_damage;
-    const sf::Texture& texture_destroid;
+    // const sf::Texture* texture_full_health;
+    const sf::Texture* texture_small_damage;
+    const sf::Texture* texture_large_damage;
+    const sf::Texture* texture_destroid;
 
     sf::Sprite sprite;
 };

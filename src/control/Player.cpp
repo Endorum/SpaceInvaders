@@ -84,6 +84,15 @@ void Player::update(){
     }
 }
 
+void Player::destroy_laser(Laser* laser) {
+    if(!laser) return;
+    auto it = std::find(lasers.begin(), lasers.end(), laser);
+    if (it != lasers.end()) {
+        delete *it; // delete the laser object
+        lasers.erase(it); // remove from the vector
+    }
+}
+
 std::vector<Laser*>& Player::get_lasers(){
     return lasers;
 }

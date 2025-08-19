@@ -29,10 +29,10 @@ private:
     bool input();
     void place_aliens(int amount, sf::Texture& texture, int rows = 5, int elms = 10);
     void place_bunkers(int amount,
-            const sf::Texture& t_full_health, 
-            const sf::Texture& t_small_damage, 
-            const sf::Texture& t_large_damage, 
-            const sf::Texture& t_destroid);
+            const sf::Texture* t_full_health, 
+            const sf::Texture* t_small_damage, 
+            const sf::Texture* t_large_damage, 
+            const sf::Texture* t_destroid);
     void processInput();
 
     void load_textures();

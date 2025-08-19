@@ -38,6 +38,8 @@ public:
 
     void update();
 
+    void destroy_laser(Laser* laser);
+
     std::vector<Laser*>& get_lasers();
 
 private:

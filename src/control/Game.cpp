@@ -39,10 +39,10 @@ void Game::place_aliens(int amount, sf::Texture& texture, int rows, int elms){
 }
 
 void Game::place_bunkers(int amount,
-    const sf::Texture& t_full_health, 
-    const sf::Texture& t_small_damage, 
-    const sf::Texture& t_large_damage, 
-    const sf::Texture& t_destroid)   {
+    const sf::Texture* t_full_health, 
+    const sf::Texture* t_small_damage, 
+    const sf::Texture* t_large_damage, 
+    const sf::Texture* t_destroid)   {
 
     float pos_x = 0;
     float pos_y = -constants::BUNKER_HEIGHT;
@@ -123,7 +123,7 @@ void Game::start() {
         exit(1);
     }
 
-    place_bunkers(4, t_full_health, t_small_damage, t_large_damage, t_destroid);
+    place_bunkers(4, &t_full_health, &t_small_damage, &t_large_damage, &t_destroid);
 
 
     while (window.isOpen()) {
@@ -175,6 +175,8 @@ bool Game::input() {
         }
         return false;
     }
+
+    return false;
 }
 
 void Game::update(float time_passed) {
@@ -187,6 +189,16 @@ void Game::update(float time_passed) {
     check_player_hits();
 
     check_bunker_hits();
+
+    // change the sprite accordingly, and remove the bunker if its health is <= 0
+    for (auto it = bunkers.begin(); it != bunkers.end(); ) {
+        if (it->update()) {
+            it = bunkers.erase(it); // erase returns the next iterator
+        } else {
+            ++it;
+        }
+    }
+        
 
     move_aliens(time_passed);
 
@@ -243,6 +255,8 @@ void Game::check_player_hits() {
 }
 
 void Game::check_bunker_hits() {
+
+    // check for hits from the aliens
     for(Alien& alien : aliens) {
         for(Laser* laser : alien.get_lasers()) {
             for(Bunker& bunker : bunkers){
@@ -250,6 +264,16 @@ void Game::check_bunker_hits() {
                     bunker.damage();
                     alien.destroy_laser(laser);
                 }
+            }
+        }
+    }
+
+    // check from hits from the player
+    for(Laser* laser : player->get_lasers()){
+        for(Bunker& bunker : bunkers){
+            if(check_collision(laser->get_sprite(), bunker.get_sprite())) {
+                bunker.damage();
+                player->destroy_laser(laser);
             }
         }
     }
