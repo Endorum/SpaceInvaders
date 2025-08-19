@@ -9,6 +9,7 @@
 #include "TextFactory.hpp"
 
 #include "RandomUtils.hpp"
+#include <unistd.h>
 
 Game::Game() : window(sf::VideoMode({constants::VIEW_WIDTH, constants::VIEW_HEIGHT}), "Space Invaders"),
     view(sf::FloatRect(sf::Vector2f({0,-constants::VIEW_HEIGHT}), sf::Vector2f({constants::VIEW_WIDTH,constants::VIEW_HEIGHT}))),
@@ -35,6 +36,30 @@ void Game::place_aliens(int amount, sf::Texture& texture, int rows, int elms){
         Alien alien(x_pos, y_pos, texture);
         aliens.push_back(alien);
     }
+}
+
+void Game::place_bunkers(int amount,
+    const sf::Texture& t_full_health, 
+    const sf::Texture& t_small_damage, 
+    const sf::Texture& t_large_damage, 
+    const sf::Texture& t_destroid)   {
+
+    float pos_x = 0;
+    float pos_y = -constants::BUNKER_HEIGHT;
+
+    for(int i=0;i<amount;i++){
+        // spacing factor
+        float segment = constants::VIEW_WIDTH / (amount + 1);
+
+        // position: center each bunker in its segment
+        pos_x = (i + 1) * segment;
+
+        // create Bunker
+        Bunker bunker(pos_x, pos_y, t_full_health, t_small_damage, t_large_damage, t_destroid);
+
+        bunkers.push_back(bunker);
+    }
+
 }
 
 void Game::show_lasers(){
@@ -75,6 +100,32 @@ void Game::start() {
     // place aliens in the game
     place_aliens(constants::ALIEN_COLUMNS * constants::ALIEN_ROWS, alien_texture); // 4x10
 
+    sf::Texture t_full_health;
+    sf::Texture t_small_damage;
+    sf::Texture t_large_damage;
+    sf::Texture t_destroid;
+
+    // load bunker textures
+    if(!t_full_health.loadFromFile("assets/sprites/Bunker.png")){
+        std::cerr << "Could not load full health bunker texture" << std::endl;
+        exit(1);
+    }
+    if(!t_small_damage.loadFromFile("assets/sprites/BunkerLittleDamage.png")){
+        std::cerr << "Could not load small damage bunker texture" << std::endl;
+        exit(1);
+    }
+    if(!t_large_damage.loadFromFile("assets/sprites/BunkerMoreDamage.png")){
+        std::cerr << "Could not load large damage bunker texture" << std::endl;
+        exit(1);
+    }
+    if(!t_destroid.loadFromFile("assets/sprites/BunkerDestroid.png")){
+        std::cerr << "Could not load destroid bunker texture" << std::endl;
+        exit(1);
+    }
+
+    place_bunkers(4, t_full_health, t_small_damage, t_large_damage, t_destroid);
+
+
     while (window.isOpen()) {
         // Restart the clock and save the elapsed time into elapsed_time
         sf::Time elapsed_time = clock.restart();
@@ -100,6 +151,7 @@ void Game::processInput(){
         player->move_left();
     }
 }
+
 
 // returns true, if the window has been closed
 bool Game::input() {
@@ -134,6 +186,8 @@ void Game::update(float time_passed) {
 
     check_player_hits();
 
+    check_bunker_hits();
+
     move_aliens(time_passed);
 
     processInput();
@@ -146,6 +200,12 @@ void Game::update(float time_passed) {
 void Game::show_aliens() {
     for(int i=0;i<aliens.size();i++){
         game_layer.add_to_layer(aliens.at(i).get_sprite());
+    }
+}
+
+void Game::show_bunkers() {
+    for(int i=0;i<bunkers.size();i++){
+        game_layer.add_to_layer(bunkers.at(i).get_sprite());
     }
 }
 
@@ -182,6 +242,19 @@ void Game::check_player_hits() {
     }
 }
 
+void Game::check_bunker_hits() {
+    for(Alien& alien : aliens) {
+        for(Laser* laser : alien.get_lasers()) {
+            for(Bunker& bunker : bunkers){
+                if(check_collision(laser->get_sprite(), bunker.get_sprite())) {
+                    bunker.damage();
+                    alien.destroy_laser(laser);
+                }
+            }
+        }
+    }
+}
+
 void Game::check_alien_hits() {
     // check for player_laser -> alien hit
     std::vector<int> lasers_to_remove;
@@ -191,8 +264,6 @@ void Game::check_alien_hits() {
     std::vector<Laser*>& lasers = player->get_lasers();
     for (int laser_idx = 0; laser_idx < lasers.size(); laser_idx++) {
         Laser* laser = lasers[laser_idx];
-        float laser_x = laser->get_pos_x();
-        float laser_y = laser->get_pos_y();
 
         for (int alien_idx = 0; alien_idx < aliens.size(); alien_idx++) {
             Alien& alien = aliens[alien_idx];
@@ -302,6 +373,13 @@ void Game::draw() {
     // show the lasers
     show_lasers();
 
+    // show the bunkers
+    show_bunkers();
+
+        
+
+    // exit(0);
+
     // win if all aliens are dead
     if(aliens.empty()){
         // show "You Win" and wait for a few seconds?
@@ -313,6 +391,11 @@ void Game::draw() {
     game_layer.draw();
     
     window.display();
+
+    if(aliens.empty()) {
+        sleep(2);
+        finish();
+    }
 }
 
 void Game::finish() {

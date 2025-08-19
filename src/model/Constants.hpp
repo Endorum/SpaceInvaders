@@ -13,6 +13,9 @@ namespace constants {
     constexpr float ALIEN_SPACING_Y = 50.0f;
     constexpr float ALIEN_SPEED = 1.0f; // speed of alien movement in pixels per second
     constexpr float ALIEN_SPEED_VERTICAL = 200.0f;
+    constexpr const float GAME_OVER_HEIGHT = 100.0f;
     constexpr const char* LASER_TEXTURE_PATH = "assets/sprites/laser.png";
     constexpr const char* SCORE_FONT_PATH = "assets/fonts/dejavu.ttf";
+    constexpr const float BUNKER_HEIGHT = 150.0f;
+
 }

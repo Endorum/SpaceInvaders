@@ -8,6 +8,7 @@
 #include "Score.hpp"
 #include "Player.hpp"
 #include "alien.hpp"
+#include "bunker.hpp"
 
 
 
@@ -27,7 +28,14 @@ private:
     // processes user input, returns true if window has been closed
     bool input();
     void place_aliens(int amount, sf::Texture& texture, int rows = 5, int elms = 10);
+    void place_bunkers(int amount,
+            const sf::Texture& t_full_health, 
+            const sf::Texture& t_small_damage, 
+            const sf::Texture& t_large_damage, 
+            const sf::Texture& t_destroid);
     void processInput();
+
+    void load_textures();
 
     // updates all game elements
     void update(float time_passed);
@@ -41,12 +49,15 @@ private:
 
     void show_lasers();
     void show_aliens();
+    void show_bunkers();
 
     void check_alien_hits();
 
     void move_aliens(float time_passed);
 
     void check_player_hits();
+
+    void check_bunker_hits();
 
     bool check_collision(sf::Sprite s1, sf::Sprite s2);
 
@@ -64,6 +75,8 @@ private:
     bool alien_direction_right = true;
 
     Score score;
+
+    std::vector<Bunker> bunkers;
 
 };
 

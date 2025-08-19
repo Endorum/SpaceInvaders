@@ -29,7 +29,7 @@ public:
 
     bool in_bounds_vertical(){
         return (
-            pos_y < -100
+            pos_y < -constants::GAME_OVER_HEIGHT
         );
     }
     
@@ -105,10 +105,10 @@ private:
     float size; 
 
     // aliens only need one hit to die
-    bool alive = true;
+    // bool alive = true;
 
     // TODO: think about how many points a kill yields
-    int yielding_points = 0;
+    // int yielding_points = 0;
 
     
 
