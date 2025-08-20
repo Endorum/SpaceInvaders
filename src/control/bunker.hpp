@@ -21,7 +21,12 @@ public:
         size = 2;
         sprite.setTexture(*t_full_health); // initialized with full health sprite
 
-        health = 4; // 0 = gone, 1 = destroid, 2 = damaged alot, 3 = damaged a little, 4 = full health
+        // 0    : gone
+        // 1-2  : texture_destroid
+        // 3-5  : texture_large_damage
+        // 6-8  : texture_small_damage
+        // 9-10 : t_full_health
+        health = 10;
 
         sprite.setOrigin(sf::Vector2f( 16.f, 16.f ));
         sprite.setScale({size, size});
@@ -41,29 +46,28 @@ public:
     // returns true if health <= 0
     // set appropiate textures
     bool update(){  
-        switch(health){
-            default:
-                std::cerr << "Invalid health amount" << std::endl;
-                exit(1);
 
-            case 0:
-                // make sprite invisable
-                sprite.setColor({0,0,0,255});
-                return true; 
-            case 1:
-                sprite.setTexture(*texture_destroid);
-                return false; 
-            case 2:
-                sprite.setTexture(*texture_large_damage);
-                return false;
-            case 3:
-                sprite.setTexture(*texture_small_damage);
-                return false;
-            case 4: 
-                // texture should already be full health, from the constructor
-                return false;
-            
+        if(health <= 0){
+            // make sprite invisable
+            sprite.setColor({0,0,0,255});
+            return true; 
         }
+        if(health <= 2){
+            sprite.setTexture(*texture_destroid);
+            return false; 
+        }
+        if(health <= 5){
+            sprite.setTexture(*texture_large_damage);
+            return false; 
+        }
+        if(health <= 8){
+            sprite.setTexture(*texture_small_damage);
+            return false; 
+        }else{
+            // do nothing the texture should be at full health
+        }
+
+        return false;
     }
 
 private:
