@@ -7,6 +7,9 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
+
 #include <iostream>
 #include "Laser.hpp"
 
@@ -14,7 +17,7 @@
 
 class Player{
 public:
-    Player(sf::Texture t) ;
+    Player(sf::Texture t, const sf::SoundBuffer& sb);
 
     void update_sprite_position();
 
@@ -66,6 +69,9 @@ private:
     
     sf::Sprite sprite;
     sf::Texture texture;
+
+    sf::SoundBuffer shooting_buffer;
+    sf::Sound shooting_sound;
 
     std::vector<Laser*> lasers; // int id for deletion
 

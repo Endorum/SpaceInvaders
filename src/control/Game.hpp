@@ -19,6 +19,8 @@ public:
     //initialize the game (window and controls)
     Game();
 
+    void init_sound(const sf::SoundBuffer& sb);
+
     // start the game
     void start();
 
@@ -80,6 +82,8 @@ private:
 
     std::vector<Bunker> bunkers;
 
+    sf::SoundBuffer alien_death_buffer;
+    sf::Sound alien_death_sound;
 };
 
 #endif

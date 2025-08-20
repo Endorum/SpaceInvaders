@@ -1,10 +1,15 @@
 #include "Player.hpp"
 
-Player::Player(sf::Texture t) 
-    : position(constants::VIEW_WIDTH/2), health(3), width(32), height(32), vert_pos(-40), texture(t), sprite(t) {
+
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
+
+Player::Player(sf::Texture t, const sf::SoundBuffer& sb) 
+    : position(constants::VIEW_WIDTH/2), health(3), width(32), height(32), vert_pos(-40), texture(t), sprite(t), shooting_sound(sb) {
 
     
 
+    
 
     int start_pos = constants::VIEW_WIDTH/2;
 
@@ -16,9 +21,14 @@ Player::Player(sf::Texture t)
     sprite.setPosition(sf::Vector2f( start_pos, vert_pos ) );
     
 
+    shooting_buffer = sb;
+    shooting_sound.setBuffer(shooting_buffer);
+    shooting_sound.setVolume(10.f);
 }
 
-void Player::update_sprite_position(){
+
+void Player::update_sprite_position()
+{
     sprite.setPosition(sf::Vector2f( position, vert_pos ) );
 }
 
@@ -49,6 +59,10 @@ const sf::Sprite& Player::get_sprite() const {
 void Player::shoot_laser(){
     Laser* laser = new Laser(position, vert_pos - height/2.f, 5);
     lasers.push_back(laser);
+
+
+    // play shooting sound
+    shooting_sound.play();
 }
 
 float Player::get_width() const {

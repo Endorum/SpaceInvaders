@@ -1,6 +1,8 @@
 #include "Game.hpp"
 
 #include <SFML/Window/Keyboard.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <optional>
 
 #include "../model/Constants.hpp"
@@ -13,7 +15,7 @@
 
 Game::Game() : window(sf::VideoMode({constants::VIEW_WIDTH, constants::VIEW_HEIGHT}), "Space Invaders"),
     view(sf::FloatRect(sf::Vector2f({0,-constants::VIEW_HEIGHT}), sf::Vector2f({constants::VIEW_WIDTH,constants::VIEW_HEIGHT}))),
-    game_layer(window), score(0) {
+    game_layer(window), score(0), alien_death_sound(alien_death_buffer) {
 
     
     // limit frame rate
@@ -21,7 +23,17 @@ Game::Game() : window(sf::VideoMode({constants::VIEW_WIDTH, constants::VIEW_HEIG
 
     // set the view (visible area) for our game
     game_layer.set_view(view);
+
+    
 }
+
+
+void Game::init_sound(const sf::SoundBuffer& sb){
+    alien_death_buffer = sb;
+    alien_death_sound.setBuffer(alien_death_buffer);
+    alien_death_sound.setVolume(10.f);
+}
+
 
 // 5 rows x 10 elms 
 void Game::place_aliens(int amount, sf::Texture& texture, int rows, int elms){
@@ -87,8 +99,15 @@ void Game::start() {
         exit(1);
     }
 
+    // loading player shooting sound
+    sf::SoundBuffer player_shooting;
+    if(!player_shooting.loadFromFile("assets/sounds/shoot.wav")){
+        std::cerr << "Could not load sound for player_shooting" << std::endl;
+        exit(1);
+    }
+
     // create player
-    player = new Player(player_texture);
+    player = new Player(player_texture, player_shooting);
 
     sf::Texture alien_texture;
     // load alien texture
@@ -124,6 +143,15 @@ void Game::start() {
     }
 
     place_bunkers(4, &t_full_health, &t_small_damage, &t_large_damage, &t_destroid);
+
+
+    sf::SoundBuffer alien_death_buffer;
+    if(!alien_death_buffer.loadFromFile("assets/sounds/invaderkilled.wav")){
+        std::cerr << "Could not load sound for invader kill" << std::endl;
+        exit(1);
+    }
+
+    init_sound(alien_death_buffer);
 
 
     while (window.isOpen()) {
@@ -311,6 +339,10 @@ void Game::check_alien_hits() {
                 lasers_to_remove.push_back(laser_idx);
                 aliens_to_remove.push_back(&alien);
                 score.increase(10); // increase score by 10 for each alien hit
+
+                // play alien death sound
+                alien_death_sound.play();
+
                 break; // One laser can only hit one alien
             }
         }
