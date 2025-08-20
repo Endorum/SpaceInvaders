@@ -61,7 +61,7 @@ public:
     }
 
     // amount <= 0 -> up, amount >= 0 -> down
-    void move_horizontally(int amount){
+    void move_horizontally(float amount){
         pos_x += amount;
 
         update_sprite_position();
