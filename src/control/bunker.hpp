@@ -13,10 +13,11 @@ public:
             const sf::Texture* t_large_damage, 
             const sf::Texture* t_destroid) : 
             
-            pos_x(init_pos_x), pos_y(init_pos_y), sprite(*t_full_health),
+            pos_x(init_pos_x), pos_y(init_pos_y), 
             texture_small_damage(t_small_damage),
             texture_large_damage(t_large_damage),
-            texture_destroid(t_destroid) {
+            texture_destroid(t_destroid),
+            sprite(*t_full_health), {
 
         size = 2;
         sprite.setTexture(*t_full_health); // initialized with full health sprite
