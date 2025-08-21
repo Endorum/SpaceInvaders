@@ -4,3 +4,4 @@
 game
 *.yaml
 *.out
+.DS_Store
