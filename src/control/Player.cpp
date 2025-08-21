@@ -5,7 +5,7 @@
 #include <SFML/Audio/SoundBuffer.hpp>
 
 Player::Player(sf::Texture t, const sf::SoundBuffer& sb) 
-    : position(constants::VIEW_WIDTH/2), health(3), width(32), height(32), vert_pos(-40), texture(t), sprite(t), shooting_sound(sb) {
+    : position(constants::VIEW_WIDTH/2), health(300), width(32), height(32), vert_pos(-40), texture(t), sprite(t), shooting_sound(sb) {
 
     
 

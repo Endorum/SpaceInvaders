@@ -71,7 +71,7 @@ private:
 
     std::vector<Alien> aliens;
 
-    float alien_speed = constants::ALIEN_SPEED;
+    float alien_speed;
     float acceleration = 0.001; // increase speed by acceleration every step
 
     bool alien_direction_right = true;
@@ -84,6 +84,11 @@ private:
 
     sf::SoundBuffer alien_death_buffer;
     sf::Sound alien_death_sound;
+
+
+    // increasing level increases the aliens speed
+    // when a level is won it gets incremented
+    int level = 1;
 };
 
 #endif

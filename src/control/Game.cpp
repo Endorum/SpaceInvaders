@@ -117,7 +117,8 @@ void Game::start() {
     }
 
     // place aliens in the game
-    place_aliens(constants::ALIEN_COLUMNS * constants::ALIEN_ROWS, alien_texture); // 4x10
+    // place_aliens(constants::ALIEN_COLUMNS * constants::ALIEN_ROWS, alien_texture); // 4x10
+    place_aliens(1, alien_texture); // 4x10
 
     sf::Texture t_full_health;
     sf::Texture t_small_damage;
@@ -371,6 +372,9 @@ void Game::move_aliens(float time_passed) {
     bool direction_right = alien_direction_right;
     bool direction_changed = false;
 
+    // gets 10% faster every level
+    alien_speed = constants::ALIEN_SPEED * ( (level / 10) + 1 ); 
+
     // increase speed over time
     alien_speed += acceleration;
 
@@ -423,6 +427,10 @@ void Game::draw() {
 
     game_layer.add_to_layer(health);
 
+    sf::Text level_text = TextFactory::create_score_text("Level: " + std::to_string(level), 20, constants::VIEW_WIDTH - 120 , -constants::VIEW_HEIGHT + 10);
+
+    game_layer.add_to_layer(level_text);
+
     // show the aliens
     show_aliens(); 
     
@@ -451,7 +459,13 @@ void Game::draw() {
 
     if(aliens.empty()) {
         sleep(2);
-        finish();
+
+        // instead of ending the game, the level is incremented
+        // finish();
+
+        level++;
+        start();
+
     }
 
     if(player->get_health() <= 0 || aliens_at_the_bottom){

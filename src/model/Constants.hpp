@@ -11,7 +11,7 @@ namespace constants {
     constexpr float ALIEN_START_Y = -(VIEW_HEIGHT - 100); // starting y position for the first alien
     constexpr float ALIEN_SPACING_X = 50.0f;
     constexpr float ALIEN_SPACING_Y = 50.0f;
-    constexpr float ALIEN_SPEED = 0.5f; // speed of alien movement in pixels per second
+    constexpr float ALIEN_SPEED = 0.4f; // speed of alien movement in pixels per second
     constexpr float ALIEN_SPEED_VERTICAL = 200.0f;
     constexpr const float GAME_OVER_HEIGHT = 100.0f;
     constexpr const char* LASER_TEXTURE_PATH = "assets/sprites/laser.png";
