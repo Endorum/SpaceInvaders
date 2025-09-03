@@ -12,13 +12,19 @@ public:
         size = 3; // default size of alien sprite
         sprite.setTexture(t);
 
+        // mitte des sprites
         sprite.setOrigin(sf::Vector2f( 16.f, 16.f ));
+
         sprite.setScale({size, size});
+
+        // start position
         sprite.setPosition(sf::Vector2f( pos_x, pos_y ));
 
     }
 
 
+    // muss nach einer aenderung der position ge-called werden, um den sprite wieder
+    // in die richtige Position zu bringen
     void update_sprite_position(){
         sprite.setPosition(sf::Vector2f( pos_x, pos_y ));
     }
@@ -39,6 +45,10 @@ public:
 
     float get_px_size() const { return size*32; } // sprite is 32x32 px
 
+
+    // Bounding boxen sind nicht gleich der sprite größe, sondern
+    // so groß wie es aussieht, damit kein alien getroffen wird 
+    // obwohl es so ausschaut als hätte man vorbei geschossen
     float get_bound_size_x() const { return 14 * size; }
     float get_bound_size_y() const { return 9 * size; }
 
@@ -67,11 +77,13 @@ public:
         update_sprite_position();
     }
 
+    // kreiert ein Laser Object und speichert es in Alien::lasers
     void shoot_laser() {
         Laser* laser = new Laser(pos_x, pos_y + get_bound_size_y() / 2.f, 5);
         lasers.push_back(laser);
     }
 
+    // iteriert über alle laser und findet den übergebenen und entfernt ihn
     void destroy_laser(Laser* laser) {
         auto it = std::find(lasers.begin(), lasers.end(), laser);
         if (it != lasers.end()) {
