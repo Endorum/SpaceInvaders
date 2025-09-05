@@ -92,7 +92,7 @@ void Game::update(float time_passed) {
 
     check_bunker_hits();
 
-    sounds_controller.play_player_shooting_sound();
+    
 }
 
 void Game::check_player_hits() {
