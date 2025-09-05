@@ -1,6 +1,10 @@
 # Github:
 https://github.com/Endorum/SpaceInvaders
 
+# Anforderungen:
+vorher zu installieren:
+- x11
+
 # Build:
 <p>cmake -S . -B build -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 <p>cmake --build build
