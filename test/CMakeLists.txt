@@ -2,10 +2,6 @@ enable_testing()
 
 set(ControlSources
     ${CMAKE_SOURCE_DIR}/src/control/Game.cpp
-    ${CMAKE_SOURCE_DIR}/src/control/Health.cpp
-    ${CMAKE_SOURCE_DIR}/src/control/Player.cpp
-    ${CMAKE_SOURCE_DIR}/src/control/Score.cpp
-    
     )
 
 set(ModelSources

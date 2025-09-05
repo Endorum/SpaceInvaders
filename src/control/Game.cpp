@@ -6,161 +6,45 @@
 #include <optional>
 
 #include "../model/Constants.hpp"
-#include "Score.hpp"
-
-#include "TextFactory.hpp"
 
 #include "RandomUtils.hpp"
 #include <unistd.h>
 
-Game::Game() : window(sf::VideoMode({constants::VIEW_WIDTH, constants::VIEW_HEIGHT}), "Space Invaders"),
-    view(sf::FloatRect(sf::Vector2f({0,-constants::VIEW_HEIGHT}), sf::Vector2f({constants::VIEW_WIDTH,constants::VIEW_HEIGHT}))),
-    game_layer(window), score(0), alien_death_sound(alien_death_buffer) {
+#include "../model/Alien.hpp"
+#include "../view/SfDrawer.hpp"
 
-    
-    // limit frame rate
+Game::Game() : state(), player_controller(state.get_player()), aliens_controller(state.get_aliens(), state.get_alien_direction_right(), state.get_alien_speed()), window(sf::VideoMode({constants::VIEW_WIDTH, constants::VIEW_HEIGHT}), "Space Invaders"), bunkers_controller(state.get_bunkers()), sounds_controller(), drawer(std::make_unique<SfDrawer>(state, window)) {
     window.setFramerateLimit(constants::FRAME_RATE);
-
-    // set the view (visible area) for our game
-    game_layer.set_view(view);
-
-    
+    drawer->init();
 }
 
+void Game::draw() {
+    window.clear();
+    drawer->draw(state);
+    if(state.get_aliens().empty()) {
+        sleep(2);
 
-void Game::init_sound(const sf::SoundBuffer& sb){
-    alien_death_buffer = sb;
-    alien_death_sound.setBuffer(alien_death_buffer);
-    alien_death_sound.setVolume(10.f);
-}
+        state.set_level(state.get_level() + 1);
+        start();
 
-
-// 5 rows x 10 elms 
-void Game::place_aliens(int amount, sf::Texture& texture, int rows, int elms){
-    float x_pos = 0;
-    float y_pos = 0;
-
-
-    aliens.clear();
-    for(int i = 0; i < amount; i++){
-        x_pos = constants::ALIEN_START_X + (i % elms) * constants::ALIEN_SPACING_X; // 1.5f is the space between aliens
-        y_pos = constants::ALIEN_START_Y + (i / elms) * constants::ALIEN_SPACING_Y; // 1.5f is the space between aliens
-        Alien alien(x_pos, y_pos, texture);
-        aliens.push_back(alien);
     }
-}
-
-void Game::place_bunkers(int amount,
-    const sf::Texture* t_full_health, 
-    const sf::Texture* t_small_damage, 
-    const sf::Texture* t_large_damage, 
-    const sf::Texture* t_destroid)   {
-
-    float pos_x = 0;
-    float pos_y = -constants::BUNKER_HEIGHT;
-
-    for(int i=0;i<amount;i++){
-        // spacing factor
-        float segment = constants::VIEW_WIDTH / (amount + 1);
-
-        // position: center each bunker in its segment
-        pos_x = (i + 1) * segment;
-
-        // create Bunker
-        Bunker bunker(pos_x, pos_y, t_full_health, t_small_damage, t_large_damage, t_destroid);
-
-        bunkers.push_back(bunker);
-    }
-
-}
-
-void Game::show_lasers(){
-    std::vector<Laser*> lasers = player->get_lasers();
-    for(int i=0;i<lasers.size();i++){
-        game_layer.add_to_layer(lasers.at(i)->get_sprite());
-    }
-    for(Alien& alien : aliens) {
-        std::vector<Laser*>& alien_lasers = alien.get_lasers();
-        for(int i=0;i<alien_lasers.size();i++){
-            game_layer.add_to_layer(alien_lasers.at(i)->get_sprite());
-        }
-    }
+    window.display();
 }
 
 void Game::start() {
     // The clock is needed to control the speed of movement
     sf::Clock clock;
 
-    sf::Texture player_texture;
-
-    // load player texture 
-    if(!player_texture.loadFromFile("assets/sprites/player.png")){
-        std::cerr << "Could not load player texture" << std::endl;
-        exit(1);
-    }
-
-    // loading player shooting sound
-    sf::SoundBuffer player_shooting;
-    if(!player_shooting.loadFromFile("assets/sounds/shoot.wav")){
-        std::cerr << "Could not load sound for player_shooting" << std::endl;
-        exit(1);
-    }
-
-    // create player
-    player = new Player(player_texture, player_shooting);
-
-    sf::Texture alien_texture;
-    // load alien texture
-    if(!alien_texture.loadFromFile("assets/sprites/alien.png")){
-        std::cerr << "Could not load alien texture" << std::endl;
-        exit(1);
-    }
-
     // place aliens in the game
-    // place_aliens(constants::ALIEN_COLUMNS * constants::ALIEN_ROWS, alien_texture); // 4x10
-    place_aliens(1, alien_texture); // 4x10
+    aliens_controller.place_aliens(constants::ALIEN_COLUMNS * constants::ALIEN_ROWS); // 4x10
 
-    sf::Texture t_full_health;
-    sf::Texture t_small_damage;
-    sf::Texture t_large_damage;
-    sf::Texture t_destroid;
-
-    // load bunker textures
-    if(!t_full_health.loadFromFile("assets/sprites/Bunker.png")){
-        std::cerr << "Could not load full health bunker texture" << std::endl;
-        exit(1);
-    }
-    if(!t_small_damage.loadFromFile("assets/sprites/BunkerLittleDamage.png")){
-        std::cerr << "Could not load small damage bunker texture" << std::endl;
-        exit(1);
-    }
-    if(!t_large_damage.loadFromFile("assets/sprites/BunkerMoreDamage.png")){
-        std::cerr << "Could not load large damage bunker texture" << std::endl;
-        exit(1);
-    }
-    if(!t_destroid.loadFromFile("assets/sprites/BunkerDestroid.png")){
-        std::cerr << "Could not load destroid bunker texture" << std::endl;
-        exit(1);
-    }
-
-    place_bunkers(4, &t_full_health, &t_small_damage, &t_large_damage, &t_destroid);
-
-
-    sf::SoundBuffer alien_death_buffer;
-    if(!alien_death_buffer.loadFromFile("assets/sounds/invaderkilled.wav")){
-        std::cerr << "Could not load sound for invader kill" << std::endl;
-        exit(1);
-    }
-
-    init_sound(alien_death_buffer);
-
+    // place bunkers in the game
+    bunkers_controller.place_bunkers(constants::BUNKER_AMOUNT);
 
     while (window.isOpen()) {
         // Restart the clock and save the elapsed time into elapsed_time
         sf::Time elapsed_time = clock.restart();
 
-        
- 
         // handle input, check if window is still open
         if (!input()) {
             // update the scene according to the passed time
@@ -171,307 +55,170 @@ void Game::start() {
     }
 }
 
-void Game::processInput(){
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){
-        player->move_right();
-    }
-
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)){
-        player->move_left();
-    }
-}
-
-
 // returns true, if the window has been closed
 bool Game::input() {
     while (std::optional<sf::Event> event = window.pollEvent()) {
         if (event->is<sf::Event::Closed>()) {
-            // quit
             window.close();
             return true;
         }
         if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
             if (keyPressed->code == sf::Keyboard::Key::Right) {
-                player->move_right();
+                player_controller.move_right();
             } else if (keyPressed->code == sf::Keyboard::Key::Left) {
-                player->move_left();
+                player_controller.move_left();
             } else if (keyPressed->code == sf::Keyboard::Key::Escape) {
                 window.close();
                 return true;
-            } else if (keyPressed->code == sf::Keyboard::Key::Space){ // Space to shoot
-                player->shoot_laser();
+            } else if (keyPressed->code == sf::Keyboard::Key::Space){
+                player_controller.shoot_laser();
+                sounds_controller.play_player_shooting_sound();
             }
         }
         return false;
     }
-
-    return false;
+    return false; // Added
 }
 
 void Game::update(float time_passed) {
-    // TODO: update the game objects with the current time stamp
 
-    player->update();
+    player_controller.update(time_passed);
+
+    aliens_controller.update(time_passed);
 
     check_alien_hits();
 
     check_player_hits();
 
     check_bunker_hits();
-
-    // change the sprite accordingly, and remove the bunker if its health is <= 0
-    for (auto it = bunkers.begin(); it != bunkers.end(); ) {
-        if (it->update()) {
-            it = bunkers.erase(it); // erase returns the next iterator
-        } else {
-            ++it;
-        }
-    }
-        
-
-    move_aliens(time_passed);
-
-    processInput();
-
-
-    
-
-}
-
-void Game::show_aliens() {
-    for(int i=0;i<aliens.size();i++){
-        game_layer.add_to_layer(aliens.at(i).get_sprite());
-    }
-}
-
-void Game::show_bunkers() {
-    for(int i=0;i<bunkers.size();i++){
-        game_layer.add_to_layer(bunkers.at(i).get_sprite());
-    }
-}
-
-bool Game::check_collision(sf::Sprite s1, sf::Sprite s2) {
-    // check if two sprites collide
-    float s1_x = s1.getPosition().x;
-    float s1_y = s1.getPosition().y;
-    float s2_x = s2.getPosition().x;
-    float s2_y = s2.getPosition().y;
-
-    if(
-        s1_x >= (s2_x - (s2.getGlobalBounds().size.x / 2.f)) &&
-        s1_x <= (s2_x + (s2.getGlobalBounds().size.x / 2.f)) &&
-        s1_y >= (s2_y - (s2.getGlobalBounds().size.y / 2.f)) && 
-        s1_y <= (s2_y + (s2.getGlobalBounds().size.y / 2.f))
-    ) {
-        return true;
-    }
-    return false;
-
 }
 
 void Game::check_player_hits() {
-    for(Alien& alien : aliens) {
-        for(Laser* laser : alien.get_lasers()) {
-            if(check_collision(laser->get_sprite(), player->get_sprite())) {
-                player->decrease_health();
-                alien.destroy_laser(laser);
-                // if(player->get_health() <= 0) {
-                //     finish(); // end the game if player health is 0
-                // }
-            }
-        }
-    }
-}
-
-void Game::check_bunker_hits() {
-
-    // check for hits from the aliens
-    for(Alien& alien : aliens) {
-        for(Laser* laser : alien.get_lasers()) {
-            for(Bunker& bunker : bunkers){
-                if(check_collision(laser->get_sprite(), bunker.get_sprite())) {
-                    bunker.damage();
-                    alien.destroy_laser(laser);
+    auto& aliens = state.get_aliens();
+    for (Alien& alien : aliens) {
+        auto& lasers = alien.get_lasers();
+        for (size_t i = 0; i < lasers.size(); ) {
+            if (check_collision(lasers[i], state.get_player())) {
+                player_controller.decrease_health();
+                lasers.erase(lasers.begin() + static_cast<long>(i));
+                if (state.get_player().get_health() <= 0) {
+                    finish();
+                    return;
                 }
-            }
-        }
-    }
-
-    // check from hits from the player
-    for(Laser* laser : player->get_lasers()){
-        for(Bunker& bunker : bunkers){
-            if(check_collision(laser->get_sprite(), bunker.get_sprite())) {
-                bunker.damage();
-                player->destroy_laser(laser);
+            } else {
+                ++i;
             }
         }
     }
 }
 
 void Game::check_alien_hits() {
-    // check for player_laser -> alien hit
+    auto& lasers = state.get_player().get_lasers();
+    auto& aliens = state.get_aliens();
+
     std::vector<int> lasers_to_remove;
-    std::vector<Alien*> aliens_to_remove;
+    std::vector<int> aliens_to_remove;
 
-    
-    std::vector<Laser*>& lasers = player->get_lasers();
-    for (int laser_idx = 0; laser_idx < lasers.size(); laser_idx++) {
-        Laser* laser = lasers[laser_idx];
+    for (int l = 0; l < static_cast<int>(lasers.size()); ++l) {
+        const Laser& laser = lasers[l];
+        float lx = laser.get_pos_x();
+        float ly = laser.get_pos_y();
 
-        for (int alien_idx = 0; alien_idx < aliens.size(); alien_idx++) {
-            Alien& alien = aliens[alien_idx];
+        for (int a = 0; a < static_cast<int>(aliens.size()); ++a) {
+            const Alien& alien = aliens[a];
 
+            float ax = alien.get_pos_x();
+            float ay = alien.get_pos_y();
+            float half_w = alien.get_width()  / 2.f;
+            float half_h = alien.get_height() / 2.f;
 
+            bool hit =
+                lx >= (ax - half_w) && lx <= (ax + half_w) &&
+                ly >= (ay - half_h) && ly <= (ay + half_h);
 
-            float laser_x = laser->get_pos_x();
-            float laser_y = laser->get_pos_y();
-
-            float alien_x = alien.get_pos_x();
-            float alien_y = alien.get_pos_y();
-            
-
-            // assuming the lasers have no width or height, can be changed later
-            if(
-                laser_x >= (alien_x - (alien.get_bound_size_x() / 2.f)) &&
-                laser_x <= (alien_x + (alien.get_bound_size_x() / 2.f)) &&
-                laser_y >= (alien_y - (alien.get_bound_size_y() / 2.f)) && 
-                laser_y <= (alien_y + (alien.get_bound_size_y() / 2.f))
-            ){
-                lasers_to_remove.push_back(laser_idx);
-                aliens_to_remove.push_back(&alien);
-                score.increase(10); // increase score by 10 for each alien hit
-
-                // play alien death sound
-                alien_death_sound.play();
-
-                break; // One laser can only hit one alien
+            if (hit) {
+                lasers_to_remove.push_back(l);
+                aliens_to_remove.push_back(a);
+                player_controller.increase_score(10);
+                sounds_controller.play_alien_death_sound();
+                break; // laser consumed
             }
         }
     }
 
-    // Remove hit aliens
-    for(Alien* alien_ptr : aliens_to_remove){
-        for(auto it = aliens.begin(); it != aliens.end(); it++){
-            if(&(*it) == alien_ptr){
-                aliens.erase(it);
-                break;
-            }
-        }
+    // Erase aliens
+    std::sort(aliens_to_remove.rbegin(), aliens_to_remove.rend());
+    aliens_to_remove.erase(std::unique(aliens_to_remove.begin(), aliens_to_remove.end()),
+                           aliens_to_remove.end());
+    for (int idx : aliens_to_remove) {
+        aliens.erase(aliens.begin() + idx);
     }
 
-    // Remove lasers
+    // Erase lasers
     std::sort(lasers_to_remove.rbegin(), lasers_to_remove.rend());
+    lasers_to_remove.erase(std::unique(lasers_to_remove.begin(), lasers_to_remove.end()),
+                           lasers_to_remove.end());
     for (int idx : lasers_to_remove) {
-        delete lasers[idx];
         lasers.erase(lasers.begin() + idx);
     }
 }
 
-void Game::move_aliens(float time_passed) {
-    
-    bool direction_right = alien_direction_right;
-    bool direction_changed = false;
+void Game::check_bunker_hits() {
 
-    // gets 10% faster every level
-    alien_speed = constants::ALIEN_SPEED * ( (level / 10) + 1 ); 
-
-    // increase speed over time
-    alien_speed += acceleration;
-
+    // check for hits from the aliens
+    auto& aliens = state.get_aliens();
+    auto& player = state.get_player();
+    auto& bunkers = state.get_bunkers();
     for(Alien& alien : aliens) {
-
-        if(RandomUtils::get_random_int(0, 1000) < 1) { // 0.1% chance to shoot
-            alien.shoot_laser();
-        }
-        alien.update();
-
-        
-        
-        if(direction_right) {
-            alien.move_horizontally(alien_speed);
-        } else {
-            alien.move_horizontally(-alien_speed);
-        }
-        if(!alien.in_bounds() && !direction_changed) {
-            alien_direction_right = !alien_direction_right;
-            direction_changed = true;
-        }
-        if(!alien.in_bounds_vertical()) {
-            aliens_at_the_bottom = true;
-            return; // end the game if any alien has reached the bottom of the screen
-        }
-    }
-    
-    if(direction_changed) {
-        for(Alien& alien : aliens) {
-            alien.move_vertically(constants::ALIEN_SPACING_Y);
+        auto& lasers = alien.get_lasers();
+        for (size_t li = 0; li < lasers.size(); ) {
+            bool erased = false;
+            for(Bunker& bunker : bunkers){
+                if(check_collision(lasers[li], bunker)) {
+                    bunkers_controller.damage_bunker(bunker);
+                    aliens_controller.destroy_laser_at(alien, li);
+                    erased = true;
+                    break;
+                }
+            }
+            if(!erased) ++li;
         }
     }
 
-
-    
+    // check from hits from the player
+    auto& player_lasers = player.get_lasers();
+    for(size_t i = 0; i < player_lasers.size(); ) {
+        bool erased = false;
+        for(Bunker& bunker : bunkers){
+            if(check_collision(player_lasers[i], bunker)) {
+                bunkers_controller.damage_bunker(bunker);
+                player_lasers.erase(player_lasers.begin() + static_cast<long>(i));
+                erased = true;
+                break;
+            }
+        }
+        if(!erased) ++i;
+    }
 }
 
-void Game::draw() {
-    window.clear();
 
-    game_layer.clear();
-    
-    
-    // add player sprite to layer
-    game_layer.add_to_layer(player->get_sprite());
+bool Game::check_collision(Positionable& s1, Positionable& s2) {
+    // check if two sprites collide
+    float s1_x = s1.get_pos_x();
+    float s1_y = s1.get_pos_y();
+    float s2_x = s2.get_pos_x();
+    float s2_y = s2.get_pos_y();
 
-    game_layer.add_to_layer(score.get_text());
-
-    sf::Text health = TextFactory::create_score_text("Health: " + std::to_string(player->get_health()), 20, 10, -constants::VIEW_HEIGHT + 50);
-
-    game_layer.add_to_layer(health);
-
-    sf::Text level_text = TextFactory::create_score_text("Level: " + std::to_string(level), 20, constants::VIEW_WIDTH - 120 , -constants::VIEW_HEIGHT + 10);
-
-    game_layer.add_to_layer(level_text);
-
-    // show the aliens
-    show_aliens(); 
-    
-    // show the lasers
-    show_lasers();
-
-    // show the bunkers
-    show_bunkers();
-
-    // win if all aliens are dead
-    if(aliens.empty()){
-        // show "You Win" and wait for a few seconds?
-        sf::Text win_msg = TextFactory::create_score_text("You Win!", 20, (constants::VIEW_WIDTH / 2.f) - 50, -constants::VIEW_HEIGHT / 2.f);
-        game_layer.add_to_layer(win_msg);
-        // finish();
+    if(
+        s1_x >= (s2_x - (s2.get_width() / 2.f)) &&
+        s1_x <= (s2_x + (s2.get_width() / 2.f)) &&
+        s1_y >= (s2_y - (s2.get_height() / 2.f)) && 
+        s1_y <= (s2_y + (s2.get_height() / 2.f))
+    ) {
+        return true;
     }
+    return false;
 
-    if(player->get_health() <= 0 || aliens_at_the_bottom) {
-        sf::Text game_over_msg = TextFactory::create_score_text("Game Over", 20, (constants::VIEW_WIDTH / 2.f) - 50, -constants::VIEW_HEIGHT / 2.f);
-        game_layer.add_to_layer(game_over_msg);
-    }
-    
-    game_layer.draw();
-    
-    window.display();
-
-    if(aliens.empty()) {
-        sleep(2);
-
-        // instead of ending the game, the level is incremented
-        // finish();
-
-        level++;
-        start();
-
-    }
-
-    if(player->get_health() <= 0 || aliens_at_the_bottom){
-        sleep(2);
-        finish();
-    }
 }
 
 void Game::finish() {
