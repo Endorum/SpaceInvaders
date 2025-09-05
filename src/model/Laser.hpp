@@ -19,6 +19,8 @@ public:
         return height;
     }
 
+    // Equality operator removed: we now manage lasers via indices/iterators only.
+
 private:
     float x, y;
     float width, height;

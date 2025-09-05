@@ -11,17 +11,12 @@ public:
     AlienController(Alien& alien) : model(alien){}
 
     void shoot_laser() {
-        Laser* laser = new Laser(model.get_pos_x(), model.get_pos_y() + model.get_height() / 2.f);
+        Laser laser(model.get_pos_x(), model.get_pos_y() + model.get_height() / 2.f);
         model.add_laser(laser);
     }
 
-    void destroy_laser(Laser* laser) {
-        std::vector<Laser*>& lasers = model.get_lasers();
-        auto it = std::find(lasers.begin(), lasers.end(), laser);
-        if (it != lasers.end()) {
-            delete *it; // delete the laser object
-            lasers.erase(it); // remove from the vector
-        }
+    void destroy_laser_at(size_t index) {
+        model.remove_laser_at(index);
     }
 
     bool move_horizontal(float dx) {
@@ -34,14 +29,12 @@ public:
 
     void update(){
         // move the aliens lasers down
-        std::vector<Laser*>& lasers = model.get_lasers();
+        std::vector<Laser>& lasers = model.get_lasers();
         for(auto it = lasers.begin(); it != lasers.end(); ){
-            Laser* laser = *it;
-            bool destroy = laser->move_vertical(constants::ALIEN_LASER_SPEED);
+            bool destroy = it->move_vertical(constants::ALIEN_LASER_SPEED);
             if(destroy){
-                delete laser;
                 it = lasers.erase(it);
-            }else it++;
+            }else ++it;
         }
     }
 

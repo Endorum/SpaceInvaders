@@ -8,7 +8,7 @@
 class SfDrawer : public GameDrawer {
 public:
     SfDrawer(GameState& game_state, sf::RenderWindow& window)
-      : game_layer(window), state(game_state), view(window.getDefaultView()) {}
+      : game_layer(window), view(window.getDefaultView()), state(game_state) {}
     ~SfDrawer() override = default;
 
 void init() override {
@@ -17,9 +17,14 @@ void init() override {
     // set the view (visible area) for our game
     game_layer.set_view(view);
 
+    // load textures
     alien_texture = load_texture(constants::ALIEN_TEXTURE_PATH);
     player_texture = load_texture(constants::PLAYER_TEXTURE_PATH);
     laser_texture = load_texture(constants::LASER_TEXTURE_PATH);
+    bunker_full_health_texture = load_texture(constants::BUNKER_FULL_HEALTH_TEXTURE_PATH);
+    bunker_small_damage_texture = load_texture(constants::BUNKER_SMALL_DAMAGE_TEXTURE_PATH);
+    bunker_large_damage_texture = load_texture(constants::BUNKER_LARGE_DAMAGE_TEXTURE_PATH);
+    bunker_destroyed_texture = load_texture(constants::BUNKER_DESTROYED_TEXTURE_PATH);
     }
 
 void draw(GameState& state) override {
@@ -31,6 +36,7 @@ void draw(GameState& state) override {
 
     show_aliens();
     show_lasers();
+    show_bunkers();
     
     game_layer.draw();
 }
@@ -49,11 +55,38 @@ sf::Texture load_texture(const std::string& texture_file) {
         return tex;
     }
 
+void show_win_message() {
+    sf::Text win_text = TextFactory::create_score_text("You Win!", 50, constants::VIEW_WIDTH / 2.f - 100, constants::VIEW_HEIGHT / 2.f - 25);
+    game_layer.add_to_layer(win_text);
+}
+
+void show_bunkers() {
+    for(int i=0;i<state.get_bunkers().size();i++){
+        Bunker& bunker = state.get_bunkers().at(i);
+        sf::Texture& texture = bunker_full_health_texture; // default texture
+        if(bunker.get_health() >= 9){
+            texture = bunker_full_health_texture;
+        }else if(bunker.get_health() >= 6){
+            texture = bunker_small_damage_texture;
+        }else if(bunker.get_health() >= 3){
+            texture = bunker_large_damage_texture;
+        }else if(bunker.get_health() >= 1){
+            texture = bunker_destroyed_texture;
+        }else{
+            continue; // skip drawing destroyed bunkers
+        }
+        GameSprite bunker_sprite = GameSprite(bunker, texture);
+        game_layer.add_to_layer(bunker_sprite.get_sprite());
+    }
+}
+
 void show_text() {
     sf::Text score = TextFactory::create_score_text("Score: " + std::to_string(state.get_player().get_score()), 20, 20, 0);
     sf::Text health = TextFactory::create_score_text("Health: " + std::to_string(state.get_player().get_health()), 20, 20, 30);
+    sf::Text level = TextFactory::create_score_text("Level: " + std::to_string(state.get_level()), 20, 20, 60);
     game_layer.add_to_layer(score);
     game_layer.add_to_layer(health);
+    game_layer.add_to_layer(level);
 }
 
 void show_player() {
@@ -76,9 +109,9 @@ void show_lasers() {
     }
     std::vector<Alien>& aliens = state.get_aliens();
     for(Alien& alien : aliens) {
-        std::vector<Laser*>& alien_lasers = alien.get_lasers();
+        std::vector<Laser>& alien_lasers = alien.get_lasers();
         for(int i=0;i<alien_lasers.size();i++){
-            GameSprite laser_sprite = GameSprite(*alien_lasers.at(i), laser_texture);
+            GameSprite laser_sprite = GameSprite(alien_lasers.at(i), laser_texture);
             game_layer.add_to_layer(laser_sprite.get_sprite());
         }
     }
@@ -90,4 +123,9 @@ void show_lasers() {
     sf::Texture player_texture;
     sf::Texture alien_texture;
     sf::Texture laser_texture;
+
+    sf::Texture bunker_full_health_texture;
+    sf::Texture bunker_small_damage_texture;
+    sf::Texture bunker_large_damage_texture;
+    sf::Texture bunker_destroyed_texture;
 };

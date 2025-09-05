@@ -24,25 +24,23 @@ public:
         return height;
     }
 
-    std::vector<Laser*>& get_lasers() {
+    std::vector<Laser>& get_lasers() {
         return lasers;
     }
 
-    void add_laser(Laser* laser) {
+    void add_laser(Laser laser) {
         lasers.push_back(laser);
     }
 
-    void remove_laser(Laser* laser) {
-        auto it = std::find(lasers.begin(), lasers.end(), laser);
-        if (it != lasers.end()) {
-            delete *it; // delete the laser object
-            lasers.erase(it); // remove from the vector
+    void remove_laser_at(size_t index) {
+        if (index < lasers.size()) {
+            lasers.erase(lasers.begin() + static_cast<long>(index));
         }
     }
 
 
 private:
-    std::vector<Laser*> lasers;
+    std::vector<Laser> lasers;
     float x, y;
     float width, height;
 

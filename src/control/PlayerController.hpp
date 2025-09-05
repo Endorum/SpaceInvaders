@@ -29,6 +29,10 @@ public:
         model.set_health(model.get_health() - 1);
     }
 
+    void destroy_laser_at(size_t index) {
+        model.remove_laser_at(index);
+    }
+
     void increase_score(int amount) {
         model.set_score(model.get_score() + amount);
     }

@@ -24,9 +24,9 @@ void place_aliens(int amount, int rows = 5, int elms = 10){
     }
 }
 
-void destroy_laser(Alien& alien, Laser* laser) {
-    AlienController alien_controller = AlienController(alien); // I know this is inefficient but what shall I do?
-    alien_controller.destroy_laser(laser);
+void destroy_laser_at(Alien& alien, size_t index) {
+    AlienController alien_controller(alien); // still a lightweight wrapper
+    alien_controller.destroy_laser_at(index);
 }
 
 private:

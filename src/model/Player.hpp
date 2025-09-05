@@ -32,9 +32,6 @@ public:
             lasers.erase(lasers.begin() + static_cast<long>(index));
         }
     }
-    void remove_laser_if(const std::function<bool(const Laser&)>& pred) {
-        lasers.erase(std::remove_if(lasers.begin(), lasers.end(), pred), lasers.end());
-    }
 
 private:
     float x, y;
