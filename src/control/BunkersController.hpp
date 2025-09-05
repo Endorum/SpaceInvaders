@@ -18,15 +18,14 @@ public:
         }
     }
 
-    void damage_bunker(Bunker& bunker, int amount = 1) {
+    void damage_bunker(size_t index, int amount = 1) {
+        if(index >= bunkers.size()) return;
+
+        Bunker& bunker = bunkers[index];
         bunker.set_health(bunker.get_health() - amount);
-        for(int i = 0; i < bunkers.size(); i++) {
-            if(&bunkers[i] == &bunker) {
-                if(bunker.get_health() <= 0) {
-                    bunkers.erase(bunkers.begin() + i);
-                } 
-                break;
-            }
+
+        if(bunker.get_health() <= 0){
+            bunkers.erase(bunkers.begin() + index);
         }
     }
 private:

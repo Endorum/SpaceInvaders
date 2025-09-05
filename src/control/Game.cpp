@@ -166,42 +166,47 @@ void Game::check_alien_hits() {
 }
 
 void Game::check_bunker_hits() {
-
     // check for hits from the aliens
     auto& aliens = state.get_aliens();
     auto& player = state.get_player();
     auto& bunkers = state.get_bunkers();
-    for(Alien& alien : aliens) {
+
+    for (Alien& alien : aliens) {
         auto& lasers = alien.get_lasers();
         for (size_t li = 0; li < lasers.size(); ) {
             bool erased = false;
-            for(Bunker& bunker : bunkers){
-                if(check_collision(lasers[li], bunker)) {
-                    bunkers_controller.damage_bunker(bunker);
+            for (size_t bi = 0; bi < bunkers.size(); ++bi) {
+                if (check_collision(lasers[li], bunkers[bi])) {
+                    bunkers_controller.damage_bunker(bi);  // pass index
                     aliens_controller.destroy_laser_at(alien, li);
                     erased = true;
-                    break;
+                    break; // exit bunker loop
                 }
             }
-            if(!erased) ++li;
+            if (!erased) {
+                ++li;
+            }
         }
     }
 
-    // check from hits from the player
+    // check for hits from the player
     auto& player_lasers = player.get_lasers();
-    for(size_t i = 0; i < player_lasers.size(); ) {
+    for (size_t li = 0; li < player_lasers.size(); ) {
         bool erased = false;
-        for(Bunker& bunker : bunkers){
-            if(check_collision(player_lasers[i], bunker)) {
-                bunkers_controller.damage_bunker(bunker);
-                player_lasers.erase(player_lasers.begin() + static_cast<long>(i));
+        for (size_t bi = 0; bi < bunkers.size(); ++bi) {
+            if (check_collision(player_lasers[li], bunkers[bi])) {
+                bunkers_controller.damage_bunker(bi);  // pass index
+                player_lasers.erase(player_lasers.begin() + static_cast<long>(li));
                 erased = true;
                 break;
             }
         }
-        if(!erased) ++i;
+        if (!erased) {
+            ++li;
+        }
     }
 }
+
 
 
 bool Game::check_collision(Positionable& s1, Positionable& s2) {
