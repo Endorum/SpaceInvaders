@@ -1,4 +1,5 @@
 #include <cstdlib>
+#pragma once
 class RandomUtils {
     public:
 
