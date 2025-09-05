@@ -63,11 +63,7 @@ bool Game::input() {
             return true;
         }
         if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-            if (keyPressed->code == sf::Keyboard::Key::Right) {
-                player_controller.move_right();
-            } else if (keyPressed->code == sf::Keyboard::Key::Left) {
-                player_controller.move_left();
-            } else if (keyPressed->code == sf::Keyboard::Key::Escape) {
+            if (keyPressed->code == sf::Keyboard::Key::Escape) {
                 window.close();
                 return true;
             } else if (keyPressed->code == sf::Keyboard::Key::Space){
@@ -75,8 +71,17 @@ bool Game::input() {
                 sounds_controller.play_player_shooting_sound();
             }
         }
-        return false;
+        
     }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){
+        player_controller.move_right();
+    }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)){
+        player_controller.move_left();
+    }
+
     return false; // Added
 }
 
