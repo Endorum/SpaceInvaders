@@ -3,11 +3,14 @@ https://github.com/Endorum/SpaceInvaders
 
 # Anforderungen:
 vorher zu installieren:
-- x11
+- sfml (sudo apt install libsfml-dev), dann Makefile anpassen (nötig da alle Abhängigkeiten gebraucht werden)
 
 # Build:
 <p>cmake -S . -B build -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 <p>cmake --build build
+
+# Build mit make:
+<p>make game
 
 # Run:
 ./build/bin/SpaceInvaders

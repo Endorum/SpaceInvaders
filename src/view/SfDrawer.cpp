@@ -44,23 +44,24 @@ sf::Texture SfDrawer::load_texture(const std::string& texture_file) {
 
 void SfDrawer::show_lasers() {
     auto& lasers = state.get_player().get_lasers();
-    for(int i=0;i<lasers.size();i++){
-        GameSprite laser_sprite = GameSprite(lasers.at(i), laser_texture);
+    for(const auto& l : lasers){
+        GameSprite laser_sprite(l, laser_texture);
         game_layer.add_to_layer(laser_sprite.get_sprite());
     }
-    std::vector<Alien>& aliens = state.get_aliens();
-    for(Alien& alien : aliens) {
-        std::vector<Laser>& alien_lasers = alien.get_lasers();
-        for(int i=0;i<alien_lasers.size();i++){
-            GameSprite laser_sprite = GameSprite(alien_lasers.at(i), laser_texture);
+    auto& aliens = state.get_aliens();
+    for(auto& alien : aliens) {
+        auto& alien_lasers = alien.get_lasers();
+        for(const auto& l : alien_lasers){
+            GameSprite laser_sprite(l, laser_texture);
             game_layer.add_to_layer(laser_sprite.get_sprite());
         }
     }
 }
 
 void SfDrawer::show_aliens() {
-    for(int i=0;i<state.get_aliens().size();i++){
-        GameSprite alien_sprite = GameSprite(state.get_aliens().at(i), alien_texture);
+    auto& aliens = state.get_aliens();
+    for(const auto& alien : aliens){
+        GameSprite alien_sprite(alien, alien_texture);
         game_layer.add_to_layer(alien_sprite.get_sprite());
     }
 }

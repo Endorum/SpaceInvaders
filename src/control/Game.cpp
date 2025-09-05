@@ -13,7 +13,14 @@
 #include "../model/Alien.hpp"
 #include "../view/SfDrawer.hpp"
 
-Game::Game() : state(), player_controller(state.get_player()), aliens_controller(state.get_aliens(), state.get_alien_direction_right(), state.get_alien_speed()), window(sf::VideoMode({constants::VIEW_WIDTH, constants::VIEW_HEIGHT}), "Space Invaders"), bunkers_controller(state.get_bunkers()), sounds_controller(), drawer(std::make_unique<SfDrawer>(state, window)) {
+Game::Game()
+    : state()
+    , player_controller(state.get_player())
+    , aliens_controller(state.get_aliens(), state.get_alien_direction_right(), state.get_alien_speed())
+    , bunkers_controller(state.get_bunkers())
+    , sounds_controller()
+    , window(sf::VideoMode({constants::VIEW_WIDTH, constants::VIEW_HEIGHT}), "Space Invaders")
+    , drawer(std::make_unique<SfDrawer>(state, window)) {
     window.setFramerateLimit(constants::FRAME_RATE);
     drawer->init();
 }

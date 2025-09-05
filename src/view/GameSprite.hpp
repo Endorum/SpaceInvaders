@@ -10,7 +10,7 @@
  */
 class GameSprite {
 public:
-    GameSprite(Positionable& pos, const sf::Texture& texture) : sprite(texture) {
+    GameSprite(const Positionable& pos, const sf::Texture& texture) : sprite(texture) {
         sprite.setPosition({pos.get_pos_x(), pos.get_pos_y()});
         sprite.setScale({2, 2});
         auto sz = texture.getSize();
