@@ -61,21 +61,29 @@ void show_win_message() {
 }
 
 void show_bunkers() {
-    for(int i=0;i<state.get_bunkers().size();i++){
+    for(size_t i=0;i<state.get_bunkers().size(); i++){
         Bunker& bunker = state.get_bunkers().at(i);
-        sf::Texture& texture = bunker_full_health_texture; // default texture
-        if(bunker.get_health() >= 9){
-            texture = bunker_full_health_texture;
-        }else if(bunker.get_health() >= 6){
-            texture = bunker_small_damage_texture;
-        }else if(bunker.get_health() >= 3){
-            texture = bunker_large_damage_texture;
-        }else if(bunker.get_health() >= 1){
-            texture = bunker_destroyed_texture;
-        }else{
-            continue; // skip drawing destroyed bunkers
+
+        if(bunker.get_health() <= 0){
+            continue;
         }
-        GameSprite bunker_sprite = GameSprite(bunker, texture);
+
+        const sf::Texture* tex = &bunker_full_health_texture;
+        
+
+        int health = bunker.get_health();
+
+        if(health >= 9){
+            tex = &bunker_full_health_texture;
+        } else if(health >= 6){
+            tex = &bunker_small_damage_texture;
+        } else if(health >= 3){
+            tex = &bunker_large_damage_texture;
+        } else {
+            tex = &bunker_destroyed_texture;
+        }
+
+        GameSprite bunker_sprite(bunker, *tex);
         game_layer.add_to_layer(bunker_sprite.get_sprite());
     }
 }
