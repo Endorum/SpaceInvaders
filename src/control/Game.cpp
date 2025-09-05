@@ -82,14 +82,17 @@ bool Game::input() {
         player_controller.move_left();
     }
 
-    return false; // Added
+    return false;
 }
 
 void Game::update(float time_passed) {
 
     player_controller.update(time_passed);
 
-    aliens_controller.update(time_passed);
+    if(aliens_controller.update(time_passed)) {
+        finish();
+        return;
+    }
 
     check_alien_hits();
 

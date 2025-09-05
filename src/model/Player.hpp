@@ -27,6 +27,9 @@ public:
     std::vector<Laser>& get_lasers() { return lasers; }
     const std::vector<Laser>& get_lasers() const { return lasers; }
 
+    /**
+     * Remove laser at the specified index in the laser list.
+     */
     void remove_laser_at(size_t index) {
         if (index < lasers.size()) {
             lasers.erase(lasers.begin() + static_cast<long>(index));
@@ -34,10 +37,15 @@ public:
     }
 
 private:
+    // coordinates
     float x, y;
+    // dimensions
     float width, height;
+    // player score (aliens destroyed * 10)
     int score;
+    // player health (number of hits the player can take)
     int health;
+    // player's lasers
     std::vector<Laser> lasers;
 
     void set_position(float nx, float ny) override {

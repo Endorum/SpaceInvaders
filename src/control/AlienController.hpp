@@ -5,42 +5,44 @@
 #include <SFML/Graphics.hpp>
 #include "../model/Alien.hpp"
 
+/**
+ * Controller for managing a single alien.
+ */
 class AlienController{
 
 public:
-    AlienController(Alien& alien) : model(alien){}
+    AlienController(Alien& alien);
 
-    void shoot_laser() {
-        Laser laser(model.get_pos_x(), model.get_pos_y() + model.get_height() / 2.f);
-        model.add_laser(laser);
-    }
+    /**
+     * Make the alien shoot a laser.
+     */
+    void shoot_laser();
 
-    void destroy_laser_at(size_t index) {
-        model.remove_laser_at(index);
-    }
+    /**
+     * Destroy the laser at the specified index.
+     * @param index The index of the laser to destroy.
+     */
+    void destroy_laser_at(size_t index);
 
-    bool move_horizontal(float dx) {
-        return model.move_horizontal(dx);
-    }
+    /**
+     * Move the alien horizontally by dx.
+     * @param dx The distance to move the alien.
+     * @return true if the alien is out of bounds after the move, false otherwise.
+     */
+    bool move_horizontal(float dx);
 
-    bool move_vertical(float dy) {
-        return model.move_vertical(dy);
-    }
-
-    void update(){
-        // move the aliens lasers down
-        std::vector<Laser>& lasers = model.get_lasers();
-        for(auto it = lasers.begin(); it != lasers.end(); ){
-            bool destroy = it->move_vertical(constants::ALIEN_LASER_SPEED);
-            if(destroy){
-                it = lasers.erase(it);
-            }else ++it;
-        }
-    }
-
-
+    /**
+     * Move the alien vertically by dy.
+     * @param dy The distance to move the alien.
+     * @return true if the alien is out of bounds after the move, false otherwise.
+     */
+    bool move_vertical(float dy);
+    
+    /**
+     * Update the alien's state, including moving its lasers.
+     */
+    void update();
 
 private:
     Alien& model;
-
 };

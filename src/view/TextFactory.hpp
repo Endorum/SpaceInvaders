@@ -3,6 +3,9 @@
 #include <iostream>
 #include "../model/Constants.hpp"
 
+/**
+ * Factory class for creating text objects.
+ */
 class TextFactory {
 public:
     static const sf::Font& get_font() {
@@ -18,6 +21,14 @@ public:
         return font;
     }
     
+    /**
+     * Create a score text object with the specified parameters.
+     * @param initial_text The initial text to display.
+     * @param character_size The size of the characters (default is 20).
+     * @param pos_x The x position of the text (default is 10.f).
+     * @param pos_y The y position of the text (default is 10.f).
+     * @return An sf::Text object configured with the specified parameters.
+     */
     static sf::Text create_score_text(const std::string& initial_text,
                                       unsigned int character_size = 20,
                                       float pos_x = 10.f,

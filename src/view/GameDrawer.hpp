@@ -1,5 +1,8 @@
 #include "../model/GameState.hpp"
 #pragma once
+/**
+ * Abstract base class for drawing the game state.
+ */
 class GameDrawer {
 public:
     virtual ~GameDrawer() = default;

@@ -1,33 +1,27 @@
+#pragma once
+
 #include <vector>
 #include "../model/Bunker.hpp"
 
+/**
+ * Controller for managing the bunkers.
+ */
 class BunkersController {
 public:
-    BunkersController(std::vector<Bunker>& bunkers) : bunkers(bunkers) {}
+    BunkersController(std::vector<Bunker>& bunkers);
 
-    void place_bunkers(int amount) {
-        float x_pos = 0;
-        float y_pos = constants::VIEW_HEIGHT - 150; // fixed y position for all bunkers
+    /**
+     * Place a specified number of bunkers evenly spaced at the bottom of the screen.
+     * @param amount The number of bunkers to place.
+     */
+    void place_bunkers(int amount);
 
-        bunkers.clear();
-        float spacing = constants::VIEW_WIDTH / (amount + 1);
-        for(int i = 0; i < amount; i++){
-            x_pos = spacing * (i + 1);
-            Bunker bunker(x_pos, y_pos);
-            bunkers.push_back(bunker);
-        }
-    }
-
-    void damage_bunker(size_t index, int amount = 1) {
-        if(index >= bunkers.size()) return;
-
-        Bunker& bunker = bunkers[index];
-        bunker.set_health(bunker.get_health() - amount);
-
-        if(bunker.get_health() <= 0){
-            bunkers.erase(bunkers.begin() + index);
-        }
-    }
+    /**
+     * Damage the bunker at the specified index by the given amount.
+     * @param index The index of the bunker to damage.
+     * @param amount The amount of damage to make (default is 1).
+     */
+    void damage_bunker(size_t index, int amount = 1);
 private:
     std::vector<Bunker>& bunkers;
 };

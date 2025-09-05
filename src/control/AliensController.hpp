@@ -1,60 +1,40 @@
+#pragma once
+
 #include <vector>
 #include "../model/Alien.hpp"
 #include "AlienController.hpp"
 #include "RandomUtils.hpp"
 
+/**
+ * Controller for managing the aliens.
+ */
 class AliensController {
 public:
-    AliensController(std::vector<Alien>& aliens, bool& alien_direction_right, float& alien_speed) 
-        : aliens(aliens), alien_direction_right(alien_direction_right), alien_speed(alien_speed) {}
-    
-    
-    void update(float time_passed) {
-        move_aliens(time_passed);
-    }
+    AliensController(std::vector<Alien>& aliens, bool& alien_direction_right, float& alien_speed);
 
-    
-    void place_aliens(int amount, int rows = 5, int elms = 10){
-        float x_pos = 0;
-        float y_pos = 0;
+    /**
+     * Update the state of all aliens (movement, shooting).
+     * @param time_passed The time passed since the last update in seconds.
+     * @return true if any alien moved out of bounds, false otherwise.
+     */
+    bool update(float time_passed);
 
-        aliens.clear(); // clear existing aliens
-        for(int i = 0; i < amount; i++){
-            x_pos = constants::ALIEN_START_X + (i % elms) * constants::ALIEN_SPACING_X; // 1.5f is the space between aliens
-            y_pos = constants::ALIEN_START_Y + (i / elms) * constants::ALIEN_SPACING_Y; // 1.5f is the space between aliens
-            Alien alien(x_pos, y_pos);
-            aliens.push_back(alien);
-        }
-    }
+    /**
+     * Place a specified number of aliens in a grid formation.
+     * @param amount The total number of aliens to place.
+     * @param rows The number of rows in the grid.
+     * @param elms The number of columns in the grid.
+     */
+    void place_aliens(int amount, int rows = 5, int elms = 10);
 
-    void destroy_laser_at(Alien& alien, size_t index) {
-        AlienController alien_controller(alien); // still a lightweight wrapper
-        alien_controller.destroy_laser_at(index);
-    }
-
+    /**
+     * Destroy the laser at the specified index for the given alien.
+     * @param alien The alien whose laser is to be destroyed.
+     * @param index The index of the laser to destroy.
+     */
+    void destroy_laser_at(Alien& alien, size_t index);
 private:
-    void move_aliens(float time_passed) {
-        bool direction_right = alien_direction_right;
-        bool direction_changed = false;
-        for (Alien& alien : aliens) {
-            AlienController alien_controller(alien);
-            if (RandomUtils::get_random_int(0, 1000) < 1) {
-                alien_controller.shoot_laser();
-                
-            }
-            alien_controller.update();
-            alien_controller.move_horizontal(direction_right ? alien_speed : -alien_speed);
-            if (!alien.in_bounds() && !direction_changed) {
-                alien_direction_right = !alien_direction_right;
-                direction_changed = true;
-            }
-        }
-        if (direction_changed) {
-            for (Alien& alien : aliens) {
-                AlienController(alien).move_vertical(constants::ALIEN_SPACING_Y);
-            } 
-        }
-    }
+    bool move_aliens(float time_passed);
     std::vector<Alien>& aliens;
     bool& alien_direction_right;
     float& alien_speed;

@@ -1,57 +1,50 @@
+#pragma once
+
 #include "../model/Constants.hpp"
 #include "../model/Player.hpp"
 #include "../model/Laser.hpp"
 
 class PlayerController {
 public:
-    PlayerController(Player& player) : model(player) {}
+    PlayerController(Player& player);
 
-    void move_left() {
-        model.move_horizontal(-constants::PLAYER_SPEED);
-        if (!model.in_bounds()) {
-            model.move_horizontal(constants::PLAYER_SPEED);
-        }
-    }
+    /**
+     * Move the player left.
+     */
+    void move_left();
 
-    void move_right() {
-        model.move_horizontal(constants::PLAYER_SPEED);
-        if (!model.in_bounds()) {
-            model.move_horizontal(-constants::PLAYER_SPEED);
-        }
-    }
+    /**
+     * Move the player right.
+     */
+    void move_right();
 
-    void shoot_laser() {
-        model.add_laser(Laser(model.get_pos_x(),
-                              model.get_pos_y()-20));
-    }
+    /**
+     * Make the player shoot a laser.
+     */
+    void shoot_laser();
 
-    void decrease_health() {
-        model.set_health(model.get_health() - 1);
-    }
+    /**
+     * Decrease the player's health.
+     */
+    void decrease_health();
 
-    void destroy_laser_at(size_t index) {
-        model.remove_laser_at(index);
-    }
+    /**
+     * Destroy the laser at the specified index.
+     * @param index The index of the laser to destroy.
+     */
+    void destroy_laser_at(size_t index);
 
-    void increase_score(int amount) {
-        model.set_score(model.get_score() + amount);
-    }
+    /**
+     * Increase the player's score by the specified amount.
+     * @param amount The amount to increase the score by.
+     */
+    void increase_score(int amount);
 
-    bool update(float /*time_passed*/) {
-        bool removed = false;
-        auto& lasers = model.get_lasers();
-        for (auto it = lasers.begin(); it != lasers.end(); ) {
-            bool destroy = it->move_vertical(-constants::PLAYER_LASER_SPEED);
-            if (destroy) {
-                it = lasers.erase(it);
-                removed = true;
-            } else {
-                ++it;
-            }
-        }
-        return removed;
-    }
-
+    /**
+     * Update the player's state, including moving its lasers.
+     * @return true if any laser was removed, false otherwise.
+     */
+    bool update(float);
 private:
     Player& model;
 };

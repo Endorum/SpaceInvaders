@@ -8,8 +8,6 @@ class Alien : public Positionable {
 public:
     Alien(float x, float y) : x(x), y(y), width(50), height(50) {}
 
-    void shoot_laser();
-
     // Positionable interface
     float get_pos_x() const override {
         return x;
@@ -28,10 +26,16 @@ public:
         return lasers;
     }
 
+    /**
+     * Add a laser to the alien's laser list.
+     */
     void add_laser(Laser laser) {
         lasers.push_back(laser);
     }
 
+    /**
+     * Remove laser at the specified index.
+     */
     void remove_laser_at(size_t index) {
         if (index < lasers.size()) {
             lasers.erase(lasers.begin() + static_cast<long>(index));
@@ -40,8 +44,11 @@ public:
 
 
 private:
+    // alien's lasers
     std::vector<Laser> lasers;
+    // coordinates
     float x, y;
+    // dimensions
     float width, height;
 
         void set_position(float x, float y) override {

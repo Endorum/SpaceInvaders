@@ -19,10 +19,10 @@ public:
         return height;
     }
 
-    // Equality operator removed: we now manage lasers via indices/iterators only.
-
 private:
+    // coordinates
     float x, y;
+    // dimensions
     float width, height;
 
     void set_position(float x, float y) override {

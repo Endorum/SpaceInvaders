@@ -5,20 +5,17 @@
 #include <functional>
 #include <string>
 
-
-
+/**
+ * Wrapper class for SFML Sprite associated with a Positionable object.
+ */
 class GameSprite {
 public:
-    GameSprite(Positionable& pos, const sf::Texture& texture) : sprite(texture), pos(pos) {
+    GameSprite(Positionable& pos, const sf::Texture& texture) : sprite(texture) {
         sprite.setPosition({pos.get_pos_x(), pos.get_pos_y()});
         sprite.setScale({2, 2});
         auto sz = texture.getSize();
         sprite.setOrigin({sz.x / 2.f, sz.y / 2.f});
 
-    }
-
-    void draw() {
-        sprite.setPosition({pos.get_pos_x(), pos.get_pos_y()});
     }
 
     sf::Sprite& get_sprite() {
@@ -27,6 +24,5 @@ public:
 
 private:
     sf::Sprite sprite;
-    Positionable& pos;
 
 };

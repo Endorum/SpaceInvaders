@@ -1,6 +1,3 @@
-#ifndef GAME_H
-#define GAME_H
-
 #include <SFML/Graphics.hpp>
 #include <vector>
 
@@ -18,45 +15,70 @@
 class Game {
 
 public:
-    //initialize the game (window and controls)
     Game();
 
-    // start the game
+   /**
+    * Start the game loop.
+    */
     void start();
 
 
 
 private:
-    // processes user input, returns true if window has been closed
+    /**
+     * Handle user input.
+     * @return true if the window has been closed, false otherwise.
+     */
     bool input();
 
-    // updates all game elements
+    /**
+     * Update the game state based on the elapsed time.
+     * @param time_passed The time passed since the last update in seconds.
+     */
     void update(float time_passed);
 
-    // draws the scene
+    /**
+     * Draw the scene.
+     */
     void draw();
 
+    /**
+     * Finish the game and close the window.
+     */
     void finish();
 
+    /**
+     * Check for collisions between aliens and the player's lasers.
+     */
     void check_alien_hits();
 
+    /**
+     * Check for collisions between the player and alien lasers.
+     */
     void check_player_hits();
 
+    /**
+     * Check for collisions between two positionable objects.
+     * @param s1 first object.
+     * @param s2 second object.
+     * @return true if the objects are colliding, false otherwise.
+     */
     bool check_collision(Positionable& s1, Positionable& s2);
     void check_bunker_hits();
 
 
-
+    // current state of the game including the position and state of the entities
     GameState state;
 
+    // controllers
     PlayerController player_controller;
     AliensController aliens_controller;
     BunkersController bunkers_controller;
     SoundsController sounds_controller;
 
-    sf::RenderWindow window; // unfortunately needed here for start and input (dependence on sfml)
+    // window for rendering the game
+    sf::RenderWindow window; // unfortunately needed here for start and input (->dependence on sfml)
 
+    // drawer for rendering the game state
     std::unique_ptr<GameDrawer> drawer;
 };
-
-#endif

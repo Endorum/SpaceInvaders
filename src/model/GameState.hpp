@@ -35,10 +35,16 @@ public:
         return bunkers;
     }
 
+    /**
+     * Add a new alien to the game state.
+     */
     void add_alien(const Alien& alien) {
         aliens.push_back(alien);
     }
 
+    /**
+     * Set the direction of alien movement (true for right, false for left).
+     */
     void set_alien_direction_right(bool direction) {
         alien_direction_right = direction;
     }
@@ -49,10 +55,16 @@ public:
     }
 
 private:
+    // the player of the game with health and score
     Player player;
+    // list of aliens
     std::vector<Alien> aliens;
+    // list of bunkers (shields to protect the player from alien lasers)
     std::vector<Bunker> bunkers;
+    // current speed of alien movement
     float alien_speed = constants::ALIEN_SPEED;
+    // current direction of alien movement (true for right, false for left)
     bool alien_direction_right = true;
+    // current game level
     int level = 1;
 };
