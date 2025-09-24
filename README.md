@@ -4,6 +4,8 @@ https://github.com/Endorum/SpaceInvaders
 # Anforderungen:
 vorher zu installieren:
 - sfml (sudo apt install libsfml-dev), dann Makefile anpassen (nötig da alle Abhängigkeiten gebraucht werden)
+(Bis zuletzt war es leider nicht möglich, diese Anforderung auf JupyterHub mangels root umzusetzen.
+Sollte es nicht möglich sein, diese Anforderung umzusetzen, ist eine vorgebaute Version in /build beigefügt. Wir bitten um Verständnis!)
 
 # Build:
 <p>cmake -S . -B build -DCMAKE_POLICY_VERSION_MINIMUM=3.5
@@ -15,6 +17,7 @@ vorher zu installieren:
 # Run:
 ./build/bin/SpaceInvaders
 
+# Spielablauf:
 Das Spiel startet sofort, der Spieler befindet sich in der Mitte, unten.
 Die Aliens starten oben und bewegen sich langsam hin und her und nach unten.
 Jeder Alien hat pro Tick eine Chance von 1 zu 1000 einen Laser zu schießen, 
