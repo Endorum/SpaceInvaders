@@ -17,6 +17,8 @@ class Game {
 public:
     Game();
 
+    
+
    /**
     * Start the game loop.
     */
@@ -25,6 +27,9 @@ public:
 
 
 private:
+
+    
+
     /**
      * Handle user input.
      * @return true if the window has been closed, false otherwise.
@@ -81,4 +86,7 @@ private:
 
     // drawer for rendering the game state
     std::unique_ptr<GameDrawer> drawer;
+
+
+    friend class TestGame;
 };

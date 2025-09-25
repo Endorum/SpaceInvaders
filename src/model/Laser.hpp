@@ -3,7 +3,7 @@
 
 class Laser : public Positionable {
 public:
-    Laser(float x, float y) : x(x), y(y), width(1), height(10) {}
+    Laser(float x, float y, float w=1, float h=10) : x(x), y(y), width(w), height(h) {}
 
     // Positionable interface
     float get_pos_x() const override {
