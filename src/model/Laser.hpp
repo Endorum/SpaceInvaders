@@ -19,6 +19,14 @@ public:
         return height;
     }
 
+    void set_pos_x(float pos) {
+        x = pos;
+    }
+
+    void set_pos_y(float pos) {
+        y = pos;
+    }
+
 private:
     // coordinates
     float x, y;
