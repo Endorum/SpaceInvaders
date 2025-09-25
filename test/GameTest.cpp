@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 
 // TODO: remove this test and replace with something useful
 TEST(GameTest, example) { 
