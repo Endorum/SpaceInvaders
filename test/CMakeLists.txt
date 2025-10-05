@@ -29,7 +29,6 @@ set(TestSources
     ${CMAKE_CURRENT_SOURCE_DIR}/control/AlienControllerTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/model/AlienTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/model/BunkerTest.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/model/LaserTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/model/PlayerTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/model/GameStateTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/model/PositionableTest.cpp
