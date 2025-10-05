@@ -17,6 +17,9 @@ Sollte es nicht möglich sein, diese Anforderung umzusetzen, ist eine vorgebaute
 # Run:
 ./build/bin/SpaceInvaders
 
+# Test:
+cmake --build build && ./build/bin/Test
+
 # Spielablauf:
 Das Spiel startet sofort, der Spieler befindet sich in der Mitte, unten.
 Die Aliens starten oben und bewegen sich langsam hin und her und nach unten.
