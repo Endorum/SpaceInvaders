@@ -1,6 +1,9 @@
 # https://github.com/SFML/cmake-sfml-project
 cmake_minimum_required(VERSION 3.22...4.0.1)
 project(SpaceInvaders LANGUAGES CXX)
+
+enable_testing()
+
 set (CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -55,3 +58,4 @@ add_custom_target(copy_assets
             ${CMAKE_CURRENT_BINARY_DIR}/bin/assets
 )
 add_dependencies(SpaceInvaders copy_assets)
+
