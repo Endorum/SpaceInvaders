@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 
 #include "../src/control/AlienController.hpp"
 #include "../src/model/Alien.hpp"

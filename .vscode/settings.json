@@ -64,7 +64,6 @@
     },
     
     "cmake.configureOnOpen": true,
-    "cmake.generator": "Ninja",
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "C_Cpp.errorSquiggles": "enabled"
 

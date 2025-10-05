@@ -10,6 +10,11 @@ set(ControlSources
     )
 
 set(ModelSources
+    ${CMAKE_SOURCE_DIR}/src/model/Alien.hpp
+    ${CMAKE_SOURCE_DIR}/src/model/Laser.hpp
+    ${CMAKE_SOURCE_DIR}/src/model/Player.hpp
+    ${CMAKE_SOURCE_DIR}/src/model/Bunker.hpp
+    ${CMAKE_SOURCE_DIR}/src/model/Positionable.hpp
     )
 
 set(ViewSources
@@ -19,6 +24,8 @@ set(ViewSources
 
 set(TestSources
     ${CMAKE_CURRENT_SOURCE_DIR}/GameTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/AlienTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/PositionableTest.cpp
     )
 
 add_executable(Test
@@ -27,3 +34,14 @@ add_executable(Test
     ${ViewSources}
     ${TestSources}
     )
+
+target_link_libraries(Test
+    PRIVATE
+        gtest gtest_main gmock pthread
+        SFML::Graphics SFML::Audio
+)
+
+include(GoogleTest)
+gtest_discover_tests(Test)
+
+
